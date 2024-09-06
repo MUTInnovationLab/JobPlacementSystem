@@ -1,0 +1,7 @@
+{
+  "name": "JobPlace",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
