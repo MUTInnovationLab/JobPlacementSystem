@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { NavController} from '@ionic/angular';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
-import { AngularFirestore,AngularFirestoreCollection } from '@angular/fire/compat/firestore';
-import { LoadingController } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
-import { AlertController, NavParams } from '@ionic/angular';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AlertController, ToastController } from '@ionic/angular';
+import { Chart, ChartConfiguration } from 'chart.js/auto';
+
+interface StudentProfile {
+  fullName: string;
+  gender: string;
+  level: 'EMPLOYMENT' | 'WIL';
+  loginCount: number;
+  count?: number;
+  status?: string;
+}
 
 @Component({
   selector: 'app-reports',
@@ -16,109 +20,236 @@ import { AlertController, NavParams } from '@ionic/angular';
   styleUrls: ['./reports.page.scss'],
 })
 export class ReportsPage implements OnInit {
+  @ViewChild('statsChart') statsChartRef!: ElementRef;
+  @ViewChild('levelChart') levelChartRef!: ElementRef;
+  @ViewChild('genderChart') genderChartRef!: ElementRef;
 
-  userDocument:any;
+  isNavOpen = false;
+  userDocument: any;
+  userCount = 0;
+  recommendedCount = 0;
+  placedCount = 0;
+  employmentCount = 0;
+  wilCount = 0;
+  maleCount = 0;
+  femaleCount = 0;
 
-  coursedata : any[]=[];
-  course :any[]=[];
-  subCourses:any;
-  faculty="";
-  selectedOption:any;
-  selectedSubOption:any;
-  showSecondDropdownFlag: boolean = false;
-  location:any;
-  city:any[]=[];
-  cities: any[]=[];
-  userCount: any;
-  count:any;
-  placed:any;
+  topLoginUsers: StudentProfile[] = [];
+  topCVSentUsers: StudentProfile[] = [];
 
+  statsChart!: Chart;
+  levelChart!: Chart;
+  genderChart!: Chart;
 
-
-  constructor(private navController: NavController,
-    private loadingController: LoadingController,
+  constructor(
+    private navController: NavController,
     private auth: AngularFireAuth,
-    private fStorage: AngularFireStorage,
     private db: AngularFirestore,
     private alertController: AlertController,
-    private toastController: ToastController) 
-    
-    {
-      
-    }
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
-
-    this.getCities();
     this.getUserCount();
-    this.getRecommendedCounts();
-    this.getPlacedCounts();
+    this.getRecommendedCount();
+    this.getPlacedCount();
+    this.getTopLoginUsers();
+    this.getTopCVSentUsers();
+    this.getEmploymentAndWilCount();
+    this.getGenderCount();
   }
- 
-  isNavOpen: boolean = false;
+
+  ionViewDidEnter() {
+    this.getUser();
+    this.createCharts();
+  }
+
   toggleNav() {
-    console.log('menu');
     this.isNavOpen = !this.isNavOpen;
   }
 
-  goToPage() {
-    this.navController.navigateForward("/sign-in");
-  }
-
-
-  goToAllAppsPage() {
-    this.navController.navigateForward("/all-aplications");
-  }
-
-  goToPlaced() {
-    this.navController.navigateForward("/placed");
-  }
-
-  goToRecommended() {
-    this.navController.navigateForward("/recommended");
-  }
-
-
-  
-
-  async getCourse(event :any ){
-
-    const user = this.auth.currentUser;
-  
-  if (await user) {       
-   this.db.collection(event.detail.value, ref => ref.where("course", ">", ""))
-   .valueChanges()
-   .subscribe(data  => {
-    this.course = data;  
-  });
-   } else {
-      throw new Error('User not found');
+  async getUser() {
+    const user = await this.auth.currentUser;
+    if (user) {
+      try {
+        const querySnapshot = await this.db
+          .collection('registeredStaff')
+          .ref.where('email', '==', user.email)
+          .get();
+        if (!querySnapshot.empty) {
+          this.userDocument = querySnapshot.docs[0].data();
+        }
+      } catch (error) {
+        console.error('Error getting user document:', error);
+      }
     }
   }
 
-  isArray(obj : any ) {
-    return Array.isArray(obj)
+  getUserCount() {
+    this.db.collection('studentProfile').get().subscribe(querySnapshot => {
+      this.userCount = querySnapshot.size;
+      this.updateCharts();
+    });
   }
 
+  getRecommendedCount() {
+    this.db.collection('studentProfile', ref => ref.where('status', '==', 'recommended')).get().subscribe(querySnapshot => {
+      this.recommendedCount = querySnapshot.size;
+      this.updateCharts();
+    });
+  }
 
+  getPlacedCount() {
+    this.db.collection('studentProfile', ref => ref.where('status', '==', 'placed')).get().subscribe(querySnapshot => {
+      this.placedCount = querySnapshot.size;
+      this.updateCharts();
+    });
+  }
 
-  async getCities() {
+  async getTopLoginUsers() {
+    const snapshot = await this.db.collection('studentProfile', ref => 
+      ref.orderBy('loginCount', 'desc').limit(10)
+    ).get().toPromise();
 
-    const user = this.auth.currentUser;
+    this.topLoginUsers = snapshot?.docs.map(doc => doc.data() as StudentProfile) || [];
+  }
 
-    if (await user) { 
-    this.db.collection('studentProfile', ref => ref.where("city", ">", ""))
-      .valueChanges()
-      .subscribe((data: any[]) => {
-        this.cities = data;
-        console.log(this.cities);
-      });
-    } else {
-      throw new Error('User not found');
+  async getTopCVSentUsers() {
+    const snapshot = await this.db.collection('studentProfile', ref => 
+      ref.orderBy('count', 'desc').limit(10)
+    ).get().toPromise();
+
+    this.topCVSentUsers = snapshot?.docs.map(doc => doc.data() as StudentProfile) || [];
+  }
+
+  async getEmploymentAndWilCount() {
+    const snapshot = await this.db.collection('studentProfile').get().toPromise();
+    this.employmentCount = snapshot?.docs.filter(doc => (doc.data() as StudentProfile).level === 'EMPLOYMENT').length || 0;
+    this.wilCount = snapshot?.docs.filter(doc => (doc.data() as StudentProfile).level === 'WIL').length || 0;
+    this.updateCharts();
+  }
+
+  async getGenderCount() {
+    const snapshot = await this.db.collection('studentProfile').get().toPromise();
+    this.maleCount = snapshot?.docs.filter(doc => (doc.data() as StudentProfile).gender === 'Male').length || 0;
+    this.femaleCount = snapshot?.docs.filter(doc => (doc.data() as StudentProfile).gender === 'Female').length || 0;
+    this.updateCharts();
+  }
+
+  createCharts() {
+    this.createStatsChart();
+    this.createLevelChart();
+    this.createGenderChart();
+  }
+
+  createStatsChart() {
+    const config: ChartConfiguration = {
+      type: 'bar',
+      data: {
+        labels: ['Total Applications', 'Recommended', 'Placed', 'EMPLOYMENT', 'WIL'],
+        datasets: [{
+          label: 'Application Statistics',
+          data: [this.userCount, this.recommendedCount, this.placedCount, this.employmentCount, this.wilCount],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    };
+    this.statsChart = new Chart(this.statsChartRef.nativeElement, config);
+  }
+
+  createLevelChart() {
+    const config: ChartConfiguration = {
+      type: 'pie',
+      data: {
+        labels: ['EMPLOYMENT', 'WIL'],
+        datasets: [{
+          data: [this.employmentCount, this.wilCount],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(54, 162, 235, 0.8)'
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'EMPLOYMENT vs WIL Distribution'
+          }
+        }
+      }
+    };
+    this.levelChart = new Chart(this.levelChartRef.nativeElement, config);
+  }
+
+  createGenderChart() {
+    const config: ChartConfiguration = {
+      type: 'doughnut',
+      data: {
+        labels: ['Male', 'Female'],
+        datasets: [{
+          data: [this.maleCount, this.femaleCount],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 99, 132, 0.8)'
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Gender Distribution'
+          }
+        }
+      }
+    };
+    this.genderChart = new Chart(this.genderChartRef.nativeElement, config);
+  }
+
+  updateCharts() {
+    if (this.statsChart) {
+      this.statsChart.data.datasets[0].data = [this.userCount, this.recommendedCount, this.placedCount, this.employmentCount, this.wilCount];
+      this.statsChart.update();
+    }
+    if (this.levelChart) {
+      this.levelChart.data.datasets[0].data = [this.employmentCount, this.wilCount];
+      this.levelChart.update();
+    }
+    if (this.genderChart) {
+      this.genderChart.data.datasets[0].data = [this.maleCount, this.femaleCount];
+      this.genderChart.update();
     }
   }
-  
-
 
   async presentConfirmationAlert() {
     const alert = await this.alertController.create({
@@ -128,26 +259,19 @@ export class ReportsPage implements OnInit {
         {
           text: 'Cancel',
           role: 'cancel',
-         cssClass: 'my-custom-alert',
+          cssClass: 'my-custom-alert',
           handler: () => {
             console.log('Confirmation canceled');
           }
         }, {
           text: 'Confirm',
           handler: () => {
-           
-            
             this.auth.signOut().then(() => {
               this.navController.navigateForward("/sign-in");
-              this.presentToast()
-        
-        
+              this.presentToast('SIGNED OUT!');
             }).catch((error) => {
-            
+              console.error('Sign out error:', error);
             });
-
-
-
           }
         }
       ]
@@ -155,196 +279,25 @@ export class ReportsPage implements OnInit {
     await alert.present();
   }
 
-  async presentToast() {
+  async presentToast(message: string) {
     const toast = await this.toastController.create({
-      message: 'SIGNED OUT!',
+      message: message,
       duration: 1500,
       position: 'top',
-    
     });
-
     await toast.present();
   }
 
-  getUserCount() {
-    this.db.collection('studentProfile').get().subscribe(querySnapshot => {
-      this.userCount = querySnapshot.size;
-    }, error => {
-      console.error('Error getting user count:', error);
-    });
+  goToPage(page: string) {
+    this.navController.navigateForward(page);
   }
 
-
-  getRecommendedCounts() {
-    this.db.collection('studentProfile', ref => ref.where('status', '==', 'recommended')).get().subscribe(querySnapshot => {
-      this.count = querySnapshot.size;
-    }, error => {
-      console.error('Error getting user count:', error);
-    });
-  }
-
-  getPlacedCounts() {
-    this.db.collection('studentProfile', ref => ref.where('status', '==', 'placed')).get().subscribe(querySnapshot => {
-      this.placed = querySnapshot.size;
-    }, error => {
-      console.error('Error getting user count:', error);
-    });
-  }
-  
-  
-  
-
-
-  goToHomePage(): void {
-    this.navController.navigateBack('/home');
-  }
-  goToView(): void {
-    this.navController.navigateBack('/staffprofile');
-  }
-
-  handleMenuClick() {
-    console.log('Menu button clicked');
-  }
-  
-
-//Previlages
-
-ionViewDidEnter() {
-  this.getUser();
-}
-
-async getUser(): Promise<void> {
-  const user = await this.auth.currentUser;
-
-  if (user) {
-    try {
-      const querySnapshot = await this.db
-        .collection('registeredStaff')
-        .ref.where('email', '==', user.email)
-        .get();
-
-      if (!querySnapshot.empty) {
-        this.userDocument = querySnapshot.docs[0].data();
-        console.log(this.userDocument);
-      }
-    } catch (error) {
-      console.error('Error getting user document:', error);
-    }
-  }
-}
-
-async goToValidator(): Promise<void> {
-  try {
+  async navigateWithAuth(page: string, role: string) {
     await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.validation === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/ga-validation');
+    if (this.userDocument?.role?.[role] === 'on') {
+      this.navController.navigateForward(page);
     } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
+      this.presentToast('Unauthorized user.');
     }
-  } catch (error) {
-    console.error('Error navigating to grade avaerage validator Page:', error);
   }
-}
-
-async goToAddUser(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.addUser === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/add-user');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Add user Page:', error);
-  }
-}
-
-
-
-async goToEmployment(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.employment === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/employment-page');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Employment Page:', error);
-  }
-}
-
-async goToHistory(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.history === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/history');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to History Page:', error);
-  }
-}
-
-
-
-async goToWil(): Promise<void> {
-
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.wil === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/wil-page');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to WIL Page:', error);
-  }
-}
-
-
-
-
-goToMenuPage(): void {
-  this.navController.navigateForward('/menu').then(() => {
-    window.location.reload();
-  });
-}
-
 }

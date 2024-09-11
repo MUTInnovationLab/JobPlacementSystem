@@ -1,81 +1,131 @@
 <ion-header [translucent]="true">
-  <nav>
-    <div class="header-container">
-      <a  class="logo">
-        <img src="assets\MUT LOGO.png" alt="Logo">Reports</a>
-      <div class="hamburger-menu" (click)="toggleNav()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-      </div>
-      <div class="nav-links" [ngClass]="{ 'open': isNavOpen }">
-        <a (click)="goToMenuPage()" class="nav-link">Menu</a>
-        <div class="nav-link business-dropdown">
-          <span><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
-          <div class="dropdown-content">
-            <a (click)="goToValidator()" class="dropdown-item">Profile Validator</a>
-            <a (click)="goToEmployment()" class="dropdown-item">Employment</a>
-            <a (click)="goToHistory()" class="dropdown-item">History</a>
-            <a (click)="goToWil()" class="dropdown-item">WIL</a>
-           
-          </div>
-        </div>
-        <a (click)="goToView()" class="nav-link">Profile</a>
-        <a (click)="presentConfirmationAlert()" class="nav-link">Sign Out</a>
-      </div>
-    </div>
-  </nav>
- 
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button (click)="toggleNav()"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Reports</ion-title>
+  </ion-toolbar>
 </ion-header>
-  
-  
-   <ion-content>
-  <br>
-    <div class="menu">
-      <div class="title">
-          <ion-label class="title">Application statistics</ion-label>
-      </div>
-      <br>
-      <ion-grid>
-         
-      </ion-grid>
-    </div>
-  
-    <ion-grid>
-        <ion-row>
-            <ion-col>
-                <div class="image-container">
-                    <div class="image-text">Number of applications</div>
-                    <br>
-                    <img src="assets/img1.jpeg" button (click)="goToAllAppsPage()">
-                    <br>
-                    <p style="text-align: center">{{ userCount }}</p>
-                  </div>
-            </ion-col>
-  
-            <ion-col>
-                <div class="image-container">
-                    <div class="image-text">Recommended applications</div>
-                    <br>
-                    <img src="assets/img2.jpeg" button (click)="goToRecommended()">
-                    <br>
-                    <p style="text-align: center">{{ count }}</p>
-                  </div>
-            </ion-col>
 
-            <ion-col>
-                <div class="image-container">
-                    <div class="image-text">Placed</div>
-                    <br>
-                    <img src="assets/img3.jpeg" button (click)="goToPlaced()">
-                    <br>
-                    <p style="text-align: center">{{ placed }}</p>
-                  </div>
-            </ion-col>
+<ion-content>
+  <ion-menu side="start" menuId="first" contentId="main">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item (click)="goToPage('/menu')">Menu</ion-item>
+        <ion-item (click)="navigateWithAuth('/ga-validation', 'validation')">Profile Validator</ion-item>
+        <ion-item (click)="navigateWithAuth('/employment-page', 'employment')">Employment</ion-item>
+        <ion-item (click)="navigateWithAuth('/history', 'history')">History</ion-item>
+        <ion-item (click)="navigateWithAuth('/wil-page', 'wil')">WIL</ion-item>
+        <ion-item (click)="goToPage('/staffprofile')">Profile</ion-item>
+        <ion-item (click)="presentConfirmationAlert()">Sign Out</ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <div class="ion-padding" id="main">
+    <h1 class="page-title">Application Statistics</h1>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="4">
+          <ion-card (click)="goToPage('/all-aplications')">
+            <ion-card-header>
+              <ion-card-title>Number of Applications</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <h2>{{ userCount }}</h2>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="12" size-md="4">
+          <ion-card (click)="goToPage('/recommended')">
+            <ion-card-header>
+              <ion-card-title>Recommended Applications</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <h2>{{ recommendedCount }}</h2>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="12" size-md="4">
+          <ion-card (click)="goToPage('/placed')">
+            <ion-card-header>
+              <ion-card-title>Placed</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <h2>{{ placedCount }}</h2>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
   
-        </ion-row>
-    </ion-grid> 
-   </ion-content>
-   <ion-footer>
-    Designed by <b>MUT INNOVATIONLAB</b>
-  </ion-footer>
+    
+
+    <div class="chart-container">
+      <canvas #statsChart></canvas>
+    </div>
+    
+    <div class="chart-container">
+      <canvas #levelChart></canvas>
+    </div>
+    
+    <div class="chart-container">
+      <canvas #genderChart></canvas>
+    </div>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Top 10 Users by Login Count</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let user of topLoginUsers">
+            <ion-label>
+              <h2>{{ user.fullName }}</h2>
+              <p>Gender: {{ user.gender }} | Level: {{ user.level }} | Login Count: {{ user.loginCount }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Top 10 Users by CV Sent Count (At Risk)</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let user of topCVSentUsers">
+            <ion-label>
+              <h2>{{ user.fullName }}</h2>
+              <p>Gender: {{ user.gender }} | Level: {{ user.level }} | CV Sent Count: {{ user.count }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>EMPLOYMENT vs WIL Comparison</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>EMPLOYMENT Count: {{ employmentCount }}</p>
+        <p>WIL Count: {{ wilCount }}</p>
+        <p>Difference: {{ employmentCount - wilCount }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Designed by <b>MUT INNOVATIONLAB</b></ion-title>
+  </ion-toolbar>
+</ion-footer>
