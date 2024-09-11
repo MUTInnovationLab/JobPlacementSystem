@@ -1,0 +1,95 @@
+.center{
+    text-align: center;
+    height: 100%;
+    width: 100%;
+  }
+  ion-content {
+    --background:#fff;
+  }
+  .container{
+  
+    margin-left:20px ;
+    margin-right: 20px;
+    text-align: center;
+    font-size: 14px;
+    
+  }
+  ion-card{
+    background-color: #802B28;
+    width: 80%;
+    max-width: 500px;
+     margin:  auto;
+     box-shadow: black;
+   
+  }
+  .rounded {
+  border-radius: 10px; 
+  }
+  .color2{
+    color: rgba(252, 252, 252, 0.945);
+    font-size: large;
+  }
+  .forgotPass{
+    margin-right: 0%;
+    color: rgb(248, 252, 6);
+  }
+  .signUp{
+    margin-right: 0%;
+    color: black;
+    text-align: right;
+  }
+  
+  ion-button {
+    --background:#C89015;
+    font-weight: bolder;
+    font-family: sans-serif;
+    color:rgb(255, 255, 255);
+    box-shadow: black;
+  }
+  ion-button:hover {
+    box-shadow: 10px 10px 30px #acc5cc;
+  }
+  
+  .align{
+      display:flex;
+      justify-content: space-between;
+  }
+  img{
+    height: 150px;
+    width: 550px;
+  }
+  .centerImg{
+    text-align: center;
+  }
+  ion-footer {
+    background-color: #300505;
+    color: #fcfcfc;
+    text-align: center;
+  }
+  ion-card-content{
+
+    font-family:Arial;
+  
+  }
+ 
+  .image-size {
+    width: 100px; /* Adjust the desired width */
+    height: 60px; /* Adjust the desired height */
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  .header-title {
+margin-left:-8%;
+
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+  }
+  ion-buttons {
+    margin: 0;
+    padding: 0;
+  }
+  
+
+  

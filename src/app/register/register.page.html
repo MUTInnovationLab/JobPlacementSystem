@@ -1,0 +1,54 @@
+<ion-header>
+ 
+</ion-header>
+
+<ion-content style="--background: url('assets/tiny.jpg') no-repeat center / cover;">
+  
+
+  <div class="centerAllItems">
+     
+          <div class="centerImg">
+            <img src="assets\Co-Oparative Education.png" alt="" srcset="" />
+          </div>
+        
+
+  <ion-card>
+    <ion-card-content>
+        <br>
+<div class="color2">
+           <ion-label >Email Address</ion-label>
+            <ion-item class="rounded">
+              <ion-input type="email" [(ngModel)]="email" name="email" (input)="emailError = null;"></ion-input>
+            </ion-item>
+            <div class="error-message" *ngIf="emailError">{{ emailError }}</div>
+
+
+          <br>
+
+          <ion-label class="color3">Password</ion-label>
+          <ion-item class="rounded">
+            <ion-input type="password" [(ngModel)]="password" name="password" (input)="passwordError = null;"></ion-input>
+          </ion-item>
+          <div class="error-message" *ngIf="passwordError">{{ passwordError }}</div>
+
+          <br>
+
+          <ion-label class="color3">Confirm Password</ion-label>
+          <ion-item class="rounded">
+            <ion-input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" (input)="confirmPasswordError = null;"></ion-input>
+          </ion-item>
+          <div class="error-message" *ngIf="confirmPasswordError">{{ confirmPasswordError }}</div>
+
+          <br>
+        </div> 
+        <ion-button type="submit" expand="block" (click)="register()">REGISTER</ion-button>
+        <ion-label>Already have an account?</ion-label>
+        <ion-label class="accountExists" (click)= goToPage()>Login</ion-label>
+       
+    </ion-card-content>
+  </ion-card>
+        </div>
+  </ion-content>
+  <ion-footer>
+    Designed by &#64;<b>MUT INNOVATIONLAB</b>
+  </ion-footer>
