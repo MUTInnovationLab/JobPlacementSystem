@@ -35,3 +35,192 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+
+:root {
+    --primary-color: #006281;   /* Teal */
+    --secondary-color: #56231F; /* Maroon */
+    --accent-color: #C99115;    /* Gold */
+    --light-color: #ffffff;
+    --dark-color: #333333;
+    --font-family: 'Roboto', sans-serif;
+  }
+  
+  
+
+  ion-toolbar {
+    --background: #006281; 
+    color:#fff;
+    text-align: center;
+  }
+  
+  ion-title {
+    color: var(--light-color);
+    font-size: 1.4rem;
+  }
+  
+  ion-buttons {
+    color: var(--light-color);
+  }
+  
+  ion-icon {
+    color: var(--light-color);
+    font-size: 24px;
+  }
+  
+  ion-button {
+    color: var(--light-color);
+    --background: var(--primary-color);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  ion-button:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+  }
+  ion-card {
+    background-color: var(--light-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+  }
+  
+  ion-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  ion-card-title {
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  
+  ion-card-content {
+    color: var(--dark-color);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--dark-color);
+  }
+  
+  th {
+    background-color: var(--primary-color);
+    color: var(--light-color);
+    text-transform: uppercase;
+  }
+  
+  td {
+    color: var(--dark-color);
+  }
+  
+  tr:nth-child(even) {
+    background-color: var(--light-color);
+  }
+  
+  @media (max-width: 768px) {
+    table, th, td {
+      display: block;
+      width: 100%;
+    }
+  
+    th, td {
+      padding: 10px;
+    }
+  }
+  ion-button {
+    background-color: var(--primary-color);
+    color: var(--light-color);
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  ion-button:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+  }
+  
+  ion-button[fill="outline"] {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+  }
+  
+  ion-button[fill="outline"]:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+  body {
+    font-family: var(--font-family);
+    color: var(--dark-color);
+  }
+  
+  h1, h2, h3, h4, h5 {
+    color: var(--primary-color);
+    font-family: var(--font-family);
+    font-weight: bold;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  p {
+    color: var(--dark-color);
+    line-height: 1.6;
+  }
+  
+  strong {
+    color: var(--primary-color);
+  }
+  @media (max-width: 768px) {
+    ion-header {
+      height: 60px;
+    }
+  
+    ion-card {
+      margin: 10px;
+    }
+  
+    h1 {
+      font-size: 1.8rem;
+    }
+  
+    ion-button {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+  
+    table, th, td {
+      display: block;
+      width: 100%;
+    }
+  
+    th, td {
+      padding: 10px;
+    }
+  }
+            
