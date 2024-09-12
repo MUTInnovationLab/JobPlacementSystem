@@ -1,13 +1,117 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>view</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets\MUT LOGO.png" alt="MUT Logo" class="header-logo">
+      MUT STUDENT PROFILE
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">view</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding"  style="--background: url('assets/view3.jpg') no-repeat center / cover;">
+  <ng-container *ngIf="!(user$ | async); else profileCard">
+    <ion-card class="welcome-card">
+      <ion-card-header>
+        <ion-card-title>Welcome to Your Profile</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Your profile is not set up yet. Get started by creating your profile!</p>
+        <ion-button expand="block" (click)="goToCreate()">Create Profile</ion-button>
+        
+        <div class="guide-section">
+          <h2>Getting Started Guide</h2>
+          <a href="assets/tom.pdf" download="tom.pdf" class="pdf-link">
+            <ion-icon name="document-text-outline"></ion-icon>
+            Download Guiding PDF document
+          </a>
+          <div class="video-container">
+            <video controls>
+              <source src="assets/tinywo.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+  
+  <ng-template #profileCard>
+    <ion-card *ngIf="user$ | async as user" class="profile-card">
+      <div class="profile-header">
+        <div class="profile-image">
+          <ion-icon name="person-circle-outline"></ion-icon>
+        </div>
+        <h1>{{ user.fullName }}</h1>
+        <p>{{ user.studentno }}</p>
+        <div class="status-badge" [ngClass]="getStatusBoxStyle(user.status)">
+          {{ user.status }}
+        </div>
+      </div>
+      
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <ion-label>
+              <h2>Email</h2>
+              <p>{{ user.email }}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <h2>Phone</h2>
+              <p>{{ user.phoneNumber }}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <h2>Date of Birth</h2>
+              <p>{{ user.birthdate }}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <h2>Grade Average</h2>
+              <p>{{ user.gradeAverage }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <ion-button expand="block" (click)="toggleAllDetails()">
+          {{ showAll ? 'Hide Details' : 'View All Details' }}
+        </ion-button>
+
+        <ion-list *ngIf="showAll">
+          <ion-item *ngFor="let detail of ['address', 'city', 'postalCode', 'provice', 'country', 'license']">
+            <ion-label>
+              <h2>{{ detail | titlecase }}</h2>
+              <p>{{ user[detail] }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <div class="action-buttons">
+          <ion-button expand="block" color="primary" (click)="goToCreate()" [disabled]="isButtonDisabled()">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            {{ detProfile ? 'Update Profile' : 'Create Profile' }}
+          </ion-button>
+          <ion-button expand="block" color="danger" (click)="confermDelete()" [disabled]="isButtonDisabled()">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Delete Profile
+          </ion-button>
+          <ion-button expand="block" color="success" (click)="openPDF()" *ngIf="pdfUrl">
+            <ion-icon name="document-outline" slot="start"></ion-icon>
+            Download CV
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
 </ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Designed by MUT INNOVATIONLAB</ion-title>
+  </ion-toolbar>
+</ion-footer>
