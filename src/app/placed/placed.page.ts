@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { LoadingController, NavController, ToastController, AlertController } from '@ionic/angular';
+import { NavController,  AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-placed',
@@ -33,10 +33,7 @@ export class PlacedPage implements OnInit {
 
 
   constructor(private firestore: AngularFirestore, 
-    private loadingController: LoadingController, 
-    navCtrl: NavController,
     private auth: AngularFireAuth,
-    private toastController: ToastController,
     private alertController: AlertController,
     private navController: NavController,
     private db: AngularFirestore) { 
@@ -64,8 +61,7 @@ export class PlacedPage implements OnInit {
 
       this.db.collection('studentProfile', ref => ref.where('status', '==', 'placed'))
         .valueChanges()
-        .subscribe(data =>{
-          
+        .subscribe(data =>{  
         this.userData=data;  
         console.log(data);
         this.tableData = data;
@@ -290,7 +286,5 @@ export class PlacedPage implements OnInit {
   }
   
 
-
-  
 
 }
