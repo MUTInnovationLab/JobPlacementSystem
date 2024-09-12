@@ -1,0 +1,58 @@
+.maroon{
+    background-color: maroon;
+ }
+ img{
+   
+  width: 100px; /* Adjust the desired width */
+  height: 60px; /* Adjust the desired height */
+ }
+ .cont{
+    background-color: #fff;
+    height: 150px;
+    width: 100%;
+ }
+
+ #popover-button {
+   color: white;
+ }
+ 
+
+ .info{
+    background-color: lightgray;
+    text-align: center;
+    margin-bottom:-10px;
+ }
+ .dropdown{
+    --border-radius: 30px;
+ }
+ ion-content{
+   --background:#ECF0F6;
+}
+p{
+ color:red;
+}
+
+
+  
+  .munu {
+   color: #fff;
+   font-family:Arial;
+   height: 50px; /* Set the desired height value */
+ }
+ ion-menu-button {
+   color: white;
+ }
+ ion-footer {
+  background-color: #300505;
+  color: #fcfcfc;
+  text-align: center;
+}
+ 
+ .error-message{
+  color: red;
+  font-size: small;
+  font-family:Arial;
+}
+ion-header{
+  background-color: maroon;
+}
