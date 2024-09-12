@@ -1,0 +1,178 @@
+.image-size {
+    width: 100px; /* Adjust the desired width */
+    height: 60px; /* Adjust the desired height */
+  }
+  .header-title {
+    margin: 0 auto;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+  }
+  ion-footer {
+    background-color: #300505;
+    color: #fcfcfc;
+    text-align: center;
+  }
+
+
+  ion-content {
+    --background:#ECF0F6;
+  }
+
+  #popover-button {
+    color: white;
+  }
+  /*TABLE STYLE*/
+  .bordered {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  /* Header styles */
+  .color th {
+    background-color: #641c1c;
+    color: white;
+    font-weight: bold;
+  }
+
+
+  /* Row styles */
+  .body tr:nth-child(even) {
+    background-color: #7A726A;
+  }
+
+  .body tr:nth-child(odd) {
+    background-color: #EBDDDD;
+  }
+
+  /* Cell styles */
+  .cent td, .cent th {
+    text-align: center;
+    padding: 8px;
+  }
+
+  /* Icon styles */
+  .cent ion-icon {
+    margin-right: 5px;
+  }
+
+  .logout-button {
+    margin-right: 10px;
+    --color: white; /* Sets the color of the button text to white */
+    --ion-color-base: white; /* Sets the background color of the button to white */
+  }
+
+  .total-text {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .centered-buttons {
+    display: flex;
+    justify-content: center;
+  }
+
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .centered-buttons {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .pagination-button {
+    background-color: #c42e2e;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .pagination-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .image-size {
+    width: 100px; /* Adjust the desired width */
+    height: 60px; /* Adjust the desired height */
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+
+  //STAUS Button
+  .status-btn {
+    position: relative;
+  }
+  
+  .status-btn::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .status-btn:hover::before {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+
+  .status-btn {
+    background-color: #dc3535;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .status-btn:hover {
+    background-color: #4CAF50;
+  }
+  
+  .status-btn::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .status-btn:hover::before {
+    visibility: visible;
+    opacity: 1;
+  }
