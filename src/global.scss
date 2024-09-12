@@ -42,11 +42,13 @@
   --secondary-color: #56231F;
   --accent-color: #C99115;
   --light-color: #ffffff;
-  --dark-color: #333333;
+  --dark-color: #000000;
   --font-family: 'Roboto', sans-serif;
   --nav-height: 60px;
   --transition: all 0.3s ease;
 }
+
+
 ion-toolbar {
   --background: #006281; 
   color:#fff;
@@ -109,6 +111,18 @@ body {
   gap: 20px;
 }
 
+ion-footer {
+  background-color: #300505;
+  color: #fcfcfc;
+  text-align: center;
+}
+
+.error-message{
+  color: red;
+  font-size: small;
+  font-family:Arial;
+}
+
 .nav-link {
   color: var(--dark-color);
   text-decoration: none;
@@ -122,6 +136,7 @@ body {
   content: '';
   position: absolute;
   width: 0;
+  color: var(--secondary-color);
   height: 2px;
   bottom: 0;
   left: 0;
@@ -130,7 +145,7 @@ body {
 }
 
 .nav-link:hover {
-  color: var(--primary-color);
+  color: var(--dark-color);
 }
 
 .nav-link:hover::after {
@@ -353,16 +368,7 @@ tr:nth-child(even) {
   background-color: var(--light-color);
 }
 
-@media (max-width: 768px) {
-  table, th, td {
-    display: block;
-    width: 100%;
-  }
 
-  th, td {
-    padding: 10px;
-  }
-}
 ion-button {
   background-color: var(--primary-color);
   color: var(--light-color);
@@ -416,6 +422,7 @@ p {
 strong {
   color: var(--primary-color);
 }
+
 @media (max-width: 768px) {
   ion-header {
     height: 60px;
@@ -441,5 +448,16 @@ strong {
 
   th, td {
     padding: 10px;
+  }
+
+  @media (max-width: 768px) {
+    table, th, td {
+      display: block;
+      width: 100%;
+    }
+  
+    th, td {
+      padding: 10px;
+    }
   }
 }
