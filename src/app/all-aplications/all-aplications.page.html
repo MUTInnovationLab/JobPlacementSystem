@@ -1,13 +1,181 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>all-aplications</ion-title>
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button> 
+    </ion-buttons>
+    <ion-buttons slot="start" class="phuto" >
+      <img src="assets\MUT LOGO.png" class="image-size">
+    </ion-buttons>
+    <h2 class="header-title">ALL APPLICANTS</h2>
+    <ion-buttons slot="end">
+      <ion-button>
+          <ion-button id="popover-button"><ion-icon name="person"></ion-icon></ion-button>
+       
+        <ion-popover trigger="popover-button" [dismissOnSelect]="true">
+          <ng-template>
+            <ion-content>
+              <ion-list>
+                <ion-item lines="none" [button]="true" [detail]="false" (click)="goToView()"><ion-icon name="eye"></ion-icon> &nbsp;  VIEW PROFILE</ion-item>
+                <ion-item lines="none" [button]="true" [detail]="false" (click)="goToAddUserPage()"><ion-icon name="arrow-back-outline"></ion-icon> &nbsp;  Back to Reports</ion-item>
+                <ion-item lines="none" [button]="true" [detail]="false"  (click)="presentConfirmationAlert()"><ion-icon color="danger" name="exit"></ion-icon>&nbsp;<p>LOGOUT</p></ion-item>
+              </ion-list>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">all-aplications</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" style="--background: url('assets/view2.jpg') no-repeat center / cover;">
+
+  <div >
+    <ion-grid>
+      <ion-row>
+       <ion-col>
+         <ion-item class="dropdown" lines="none">
+           <ion-label>Faculty</ion-label>
+           <ion-select [(ngModel)]="faculty" (ionChange)="getCourse($event)" (ionChange)="applyFilter()">
+             <ion-select-option value="Natural Sciences">Natural Sciences</ion-select-option>
+             <ion-select-option value="Management Sciences">Management Sciences</ion-select-option>
+             <ion-select-option value="Engineering">Engineering</ion-select-option>
+           </ion-select>
+         </ion-item>
+       </ion-col>
+     
+     <ion-col>
+       <ion-item class="dropdown" lines="none">
+         <ion-label>Course</ion-label>
+         <ion-select interface="action-sheet" [(ngModel)]="crs" (ionChange)="applySecondFilter()">
+           <ng-container *ngFor="let cdata of course">
+             <ion-select-option value="{{cdata.course}}"  >
+               <!-- If the value of cdata.course is an array, display the first value; otherwise, display the value itself -->
+   
+               {{  cdata.course }}
+             </ion-select-option>
+           </ng-container>
+         </ion-select>
+       </ion-item>
+     </ion-col>
+     
+     <ion-col>
+      <ion-item item-start>
+        <ion-label>Grade Average</ion-label>
+        <ion-select [(ngModel)]="gradeAverage" (ionChange)="avg()">
+          <ion-select-option value="50">50% - 59%</ion-select-option>
+          <ion-select-option value="60">60% - 69%</ion-select-option>
+          <ion-select-option value="70">70% - 79%</ion-select-option>
+          <ion-select-option value="80">80% - 89%</ion-select-option>
+          <ion-select-option value="90">90% - 100%</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+   
+     <ion-col>
+       <ion-item item-start>
+         <ion-label>LEVEL</ion-label>
+         <ion-select interface="popover" placeholder="" [(ngModel)]="level" (ionChange)="levelFilter()">
+           <ion-select-option value="WIL">WIL</ion-select-option>
+           <ion-select-option value="EMPLOYMENT">EMPLOYMENT</ion-select-option>
+         </ion-select>
+       </ion-item>
+     </ion-col>
+   
+     
+     </ion-row>
+     </ion-grid>
+     <ion-item>
+      <ion-input type="text" placeholder="Search using student number" [(ngModel)]="studentno" (ionChange)="searchByStudentNo()"></ion-input>
+    </ion-item>
+   
+   
+   
+
+  
+
+  <div class="cent">
+    <ion-grid>
+      <table class="bordered">
+        <thead class="color">
+          <tr>
+            <th>
+              <ion-icon name="person"></ion-icon>
+              <br>
+              Student
+            </th>
+            <th>
+              <ion-icon name="albums-outline"></ion-icon>
+              <br>
+              Student No
+            </th>
+            <th>
+              <ion-icon name="school"></ion-icon>
+              <br>
+              Faculty
+            </th>
+            <th>
+              <ion-icon name="book"></ion-icon>
+              <br>
+              Course
+            </th>
+            <th>
+              <ion-icon name="trending-up"></ion-icon>
+              <br>
+              Grade Average
+            </th>
+            <th>
+              <ion-icon name="location"></ion-icon>
+              <br>
+              City
+            </th>
+            <th>
+              <ion-icon name="checkmark-done-sharp"></ion-icon>
+              <br>
+              Status
+            </th>
+            <th>
+              <ion-icon name="mail"></ion-icon>
+              <br>
+              Email
+            </th>
+            <th>
+              <ion-icon name="options"></ion-icon>
+              <br>
+              Level
+            </th>
+          </tr>
+          
+        </thead>
+        <tbody class="body">
+          <tr *ngFor="let data of tableData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)">
+            <td class="white-text">{{data.fullName}}</td>
+            <td>{{ data.studentno }}</td>
+            <td class="white-text">{{data.faculty}}</td>
+            <td class="white-text">{{data.course}}</td>
+            <td class="white-text">{{data.gradeAverage}}</td>
+            <td class="white-text">{{data.city}}</td>
+            <td class="white-text">{{data.status}}</td>
+            <td class="white-text">{{data.email}}</td>
+            <td class="white-text">{{data.level}}</td>
+          </tr> 
+        </tbody>
+      </table>
+      <p class="total-text ion-text-left">Current Number of Applications: {{tableData.length}}</p>
+      <div class="pagination">
+        <div class="centered-buttons">
+          <button class="pagination-button" [disabled]="currentPage === 1" (click)="previousPage()">Previous</button>
+          <button class="pagination-button" [disabled]="currentPage === totalPages()" (click)="nextPage()">Next</button>
+        </div>
+      </div>
+      <button class="export-button" (click)="exportToSpreadsheet()">Export to Spreadsheet</button>
+
+
+    </ion-grid>
+  </div>
+  </div>
+  
 </ion-content>
+<ion-footer>
+  Designed by &#64;<b>MUT INNOVATIONLAB</b>
+</ion-footer>
