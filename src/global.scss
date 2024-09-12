@@ -47,6 +47,12 @@
   --nav-height: 60px;
   --transition: all 0.3s ease;
 }
+ion-toolbar {
+  --background: #006281; 
+  color:#fff;
+  text-align: center;
+}
+
 
 body {
   font-family: var(--font-family);
