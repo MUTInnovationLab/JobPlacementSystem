@@ -1,10 +1,10 @@
-import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
-import { AngularFireAuth } from "@angular/fire/compat/auth";
-import { AngularFirestore } from "@angular/fire/compat/firestore";
-import { NavController,  AlertController } from "@ionic/angular";
 
 
+
+import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { LoadingController, NavController, ToastController, AlertController } from '@ionic/angular';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 
@@ -40,6 +40,7 @@ studentno='';
 
   constructor(
     private firestore: AngularFirestore, 
+    navCtrl: NavController,
     private auth: AngularFireAuth,
     private alertController: AlertController,
     private navController: NavController,

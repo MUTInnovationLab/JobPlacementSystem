@@ -82,4 +82,35 @@
   
     margin:0;
     padding: 0;
+  }   
+
+  
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  img {
+      width: 90%; /* Adjust the width for smaller screens */
+      height: auto;
   }
+  .container {
+      margin-left: 10px;
+      margin-right: 10px;
+  }
+  ion-card {
+      width: 90%;
+      max-width: none; /* Remove max-width for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  img {
+      width: 100%; /* Full width for very small screens */
+  }
+  ion-card {
+      width: 100%;
+      margin: 0;
+  }
+  .container {
+      margin-left: 5px;
+      margin-right: 5px;
+  }
+}
