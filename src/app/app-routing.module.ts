@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'sign-in',
     pathMatch: 'full'
   },
   {
@@ -83,6 +83,11 @@ const routes: Routes = [
     path: 'wil-page',
     loadChildren: () => import('./wil-page/wil-page.module').then( m => m.WilPagePageModule)
   },
+  {
+    path: 'register',
+    loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
+  },
+
 ];
 
 @NgModule({

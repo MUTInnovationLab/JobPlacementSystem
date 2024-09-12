@@ -1,13 +1,131 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>reports</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button (click)="toggleNav()"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Reports</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">reports</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-menu side="start" menuId="first" contentId="main">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item (click)="goToPage('/menu')">Menu</ion-item>
+        <ion-item (click)="navigateWithAuth('/ga-validation', 'validation')">Profile Validator</ion-item>
+        <ion-item (click)="navigateWithAuth('/employment-page', 'employment')">Employment</ion-item>
+        <ion-item (click)="navigateWithAuth('/history', 'history')">History</ion-item>
+        <ion-item (click)="navigateWithAuth('/wil-page', 'wil')">WIL</ion-item>
+        <ion-item (click)="goToPage('/staffprofile')">Profile</ion-item>
+        <ion-item (click)="presentConfirmationAlert()">Sign Out</ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <div class="ion-padding" id="main">
+    <h1 class="page-title">Application Statistics</h1>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="4">
+          <ion-card (click)="goToPage('/all-aplications')">
+            <ion-card-header>
+              <ion-card-title>Number of Applications</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <h2>{{ userCount }}</h2>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="12" size-md="4">
+          <ion-card (click)="goToPage('/recommended')">
+            <ion-card-header>
+              <ion-card-title>Recommended Applications</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <h2>{{ recommendedCount }}</h2>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="12" size-md="4">
+          <ion-card (click)="goToPage('/placed')">
+            <ion-card-header>
+              <ion-card-title>Placed</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <h2>{{ placedCount }}</h2>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+  
+    
+
+    <div class="chart-container">
+      <canvas #statsChart></canvas>
+    </div>
+    
+    <div class="chart-container">
+      <canvas #levelChart></canvas>
+    </div>
+    
+    <div class="chart-container">
+      <canvas #genderChart></canvas>
+    </div>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Top 10 Users by Login Count</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let user of topLoginUsers">
+            <ion-label>
+              <h2>{{ user.fullName }}</h2>
+              <p>Gender: {{ user.gender }} | Level: {{ user.level }} | Login Count: {{ user.loginCount }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Top 10 Users by CV Sent Count (At Risk)</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let user of topCVSentUsers">
+            <ion-label>
+              <h2>{{ user.fullName }}</h2>
+              <p>Gender: {{ user.gender }} | Level: {{ user.level }} | CV Sent Count: {{ user.count }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>EMPLOYMENT vs WIL Comparison</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>EMPLOYMENT Count: {{ employmentCount }}</p>
+        <p>WIL Count: {{ wilCount }}</p>
+        <p>Difference: {{ employmentCount - wilCount }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Designed by <b>MUT INNOVATIONLAB</b></ion-title>
+  </ion-toolbar>
+</ion-footer>

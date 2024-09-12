@@ -31,6 +31,7 @@
     "chart.js": "^4.4.4",
     "file-saver": "^2.0.5",
     "firebase": "^10.13.1",
+    "firestore": "^1.1.6",
     "ionicons": "^7.0.0",
     "pdf-lib": "^1.17.1",
     "pdfmake": "^0.2.12",

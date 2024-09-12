@@ -1,13 +1,178 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>add-user</ion-title>
-  </ion-toolbar>
+  <nav>
+    <div class="header-container">
+      <a  class="logo">
+        <img src="assets\MUT LOGO.png" alt="Logo">Add User</a>
+      <div class="hamburger-menu" (click)="toggleNav()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <div class="nav-links" [ngClass]="{ 'open': isNavOpen }">
+        <a (click)="goToMenuPage()" class="nav-link">Menu</a>
+        <div class="nav-link business-dropdown">
+          <span><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
+          <div class="dropdown-content">
+            <a (click)="goToValidator()" class="dropdown-item">Profile Validator</a>
+            <a (click)="goToEmployment()" class="dropdown-item">Employment</a>
+            <a (click)="goToHistory()" class="dropdown-item">History</a>
+            <a (click)="goToWil()" class="dropdown-item">WIL</a>
+            <a routerLink="/staffprofile" class="dropdown-item">Profile</a>
+          </div>
+        </div>
+        <a (click)="goToReports()" class="nav-link">Reports</a>
+        <a (click)="presentConfirmationAlert()" class="nav-link">Sign Out</a>
+      </div>
+    </div>
+  </nav>
+ 
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">add-user</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+
+ 
+
+
+
+<ion-content [fullscreen]="true" style="--background: url('assets/tiny.jpg') no-repeat center / cover;">
+
+  <div class="info">
+    <ion-label >ADD & GRANT USER PRIVILEGES</ion-label>
+  </div>
+
+  <div class="cont">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title text-align="center">Add User Info</ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+
+          <ion-item>
+            <ion-label position="floating">Name</ion-label>
+            <ion-icon name="person" slot="start"></ion-icon>
+            <ion-input type="text" name="name" [(ngModel)]="name" (input)="nameError=null;"></ion-input>
+            <div class="error-message" *ngIf="nameError">{{ nameError }}</div>
+          </ion-item>
+       
+
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-icon name="mail" slot="start"></ion-icon>
+            <ion-input type="email" [(ngModel)]="email" name="email" (input)="emailError = null;"></ion-input>
+            <div class="error-message" *ngIf="emailError">{{ emailError }}</div>
+          </ion-item>
+
+        
+          <ion-item>
+            <ion-label position="floating">Position</ion-label>
+            <ion-icon name="briefcase" slot="start"></ion-icon>
+            <ion-input type="text" name="position" [(ngModel)]="position" (input)="positionError = null;"></ion-input>
+            <div class="error-message" *ngIf="positionError">{{ positionError }}</div>
+          </ion-item>
+         
+          <ion-item>
+            <ion-label position="floating" >Staff Number + year</ion-label>
+            <ion-icon name="people" slot="start"></ion-icon>
+            <ion-input title="e.g if the year is 2024 (2134124)" type="text" name="staffNumber" [(ngModel)]="staffNumber" (input)="staffError = null;"></ion-input>
+            <div class="error-message" *ngIf="staffError">{{ staffError }}</div>
+          </ion-item>
+        
+
+      </ion-card-content>
+    </ion-card>
+    
+
+    <div class="info">
+    <ion-label >ADD ROLE</ion-label>
+    </div>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+
+
+        <ion-item>
+          <ion-label>
+            <ion-icon name="time"></ion-icon>
+            History
+          </ion-label>
+          <ion-toggle slot="end"  (ionChange)="getHistoryValue($event)"></ion-toggle>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <ion-icon name="stats-chart"></ion-icon>
+            Reports
+          </ion-label>
+          <ion-toggle slot="end" (ionChange)="getStatisticValue($event)"></ion-toggle>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <ion-icon name="briefcase"></ion-icon>
+            Employment
+          </ion-label>
+          <ion-toggle slot="end" (ionChange)="getEmploymentValue($event)"></ion-toggle>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <ion-icon name="school"></ion-icon>
+            WIL
+          </ion-label>
+          <ion-toggle slot="end"(ionChange)="getWilValue($event)"></ion-toggle>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>
+            <ion-icon name="person-add-sharp"></ion-icon>
+            AddUser
+          </ion-label>
+          <ion-toggle slot="end"(ionChange)="getAdduserValue($event)"></ion-toggle>
+        </ion-item>
+        <ion-item>
+
+
+          <ion-label>
+            <ion-icon name="checkmark-done-sharp"></ion-icon>
+            Profile Validator
+          </ion-label>
+          <ion-toggle slot="end"(ionChange)="getValidationValue($event)"></ion-toggle>
+        </ion-item>
+        
+       
+        <ion-button color="danger" fill="outline" class="ion-margin-top" (click)="deleteUser()">
+          <ion-icon slot="start" name="trash-outline"></ion-icon>
+          Remove
+        </ion-button>
+        <ion-button color="medium" fill="outline" class="ion-margin-top" (click)="updateUser()">
+          <ion-icon slot="start" name="pencil-outline"></ion-icon>
+          Update
+        </ion-button>
+        
+        <ion-button color="success" fill="outline" class="ion-margin-top" (click)="Validation()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Assign
+        </ion-button>
+        
+
+      </ion-card-content>
+    </ion-card>
+
+
+  </div>
+  <br>
+  <br>
+  <br>
+  <ion-card>
+    
+  </ion-card>
 </ion-content>
+<ion-footer>
+  Designed by &#64;<b>MUT INNOVATIONLAB</b>
+</ion-footer>

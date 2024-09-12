@@ -1,13 +1,96 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>menu</ion-title>
-  </ion-toolbar>
+  <nav>
+    <div class="header-container">
+      <a class="logo">
+        <img src="assets\MUT LOGO.png" alt="Logo">DASHBOARD
+      </a>
+      <div class="hamburger-menu" (click)="toggleNav()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <div class="nav-links" [ngClass]="{ 'open': isNavOpen }">
+        <a (click)="goToAddUser()" class="nav-link">Add Staff</a>
+        <div class="nav-link business-dropdown">
+          <span><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
+          <div class="dropdown-content">
+            <a (click)="goToValidator()" class="dropdown-item">Profile Validator</a>
+            <a (click)="goToEmployment()" class="dropdown-item">Employment</a>
+            <a (click)="goToHistory()" class="dropdown-item">History</a>
+            <a (click)="goToWil()" class="dropdown-item">WIL</a>
+            <a (click)="goToView()" class="dropdown-item">Profile</a>
+          </div>
+        </div>
+        <a (click)="goToReports()" class="nav-link">Reports</a>
+        <a (click)="presentConfirmationAlert()" class="nav-link">Sign Out</a>
+      </div>
+    </div>
+  </nav>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">menu</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <div class="dashboard-container">
+    <div class="quick-actions">
+      <ion-card class="action-card wil" button (click)="goToWil()">
+        <ion-icon name="document-text"></ion-icon>
+        <h2>WIL</h2>
+      </ion-card>
+      <ion-card class="action-card employment" button (click)="goToEmployment()">
+        <ion-icon name="briefcase"></ion-icon>
+        <h2>EMPLOYMENT</h2>
+      </ion-card>
+    </div>
+
+    <div class="user-profile">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>User Profile</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-label>Name</ion-label>
+              <ion-text>{{ (user$ | async)?.Name || 'N/A' }}</ion-text>
+            </ion-item>
+            <ion-item>
+              <ion-label>Email</ion-label>
+              <ion-text>{{ (user$ | async)?.email || 'N/A' }}</ion-text>
+            </ion-item>
+            <ion-item>
+              <ion-label>Position</ion-label>
+              <ion-text>{{ (user$ | async)?.position || 'N/A' }}</ion-text>
+            </ion-item>
+            <ion-item>
+              <ion-label>Staff No.</ion-label>
+              <ion-text>{{ (user$ | async)?.staffNumber || 'N/A' }}</ion-text>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="user-tasks">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Tasks Granted</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="task-grid">
+            <div class="task-item" *ngIf="(user$ | async)?.role?.history === 'on'">History</div>
+            <div class="task-item" *ngIf="(user$ | async)?.role?.statistic === 'on'">Reports</div>
+            <div class="task-item" *ngIf="(user$ | async)?.role?.employment === 'on'">Employment</div>
+            <div class="task-item" *ngIf="(user$ | async)?.role?.wil === 'on'">WIL</div>
+            <div class="task-item" *ngIf="(user$ | async)?.role?.addUser === 'on'">+New Users</div>
+            <div class="task-item" *ngIf="(user$ | async)?.role?.validation === 'on'">Profile Validation</div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Designed by <b>MUT INNOVATIONLAB</b></ion-title>
+  </ion-toolbar>
+</ion-footer>

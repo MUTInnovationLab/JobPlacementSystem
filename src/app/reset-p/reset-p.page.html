@@ -1,13 +1,45 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>reset-p</ion-title>
-  </ion-toolbar>
+<ion-header>
+ 
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">reset-p</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+<ion-content [fullscreen]="true" style="--background: url('assets/tiny.jpg') no-repeat center / cover;">
+  <br>
+  <br>
+      <div class="container">
+          <div class="center">
+            <img src="assets\Co-Oparative Education.png" alt="" srcset="" />
+          </div>
+        </div>
+  <br>
+  <br>
+        <ion-card>
+            <ion-card-content>
+                <br>
+                <div class="color2">
+                  <ion-label >Email Address</ion-label>
+                   <ion-item class="rounded">
+                     <ion-input type="email" [(ngModel)]="email" name="email" (input)="emailError = null;"></ion-input>
+                   </ion-item>
+                   <div class="error-message" *ngIf="emailError">{{ emailError }}</div>
+       
+                  <br>
+                  
+                  
+                  <ion-button expand="block" (click)="reset()">RESET</ion-button>
+                 
+                  <ion-label class="signIn" (click)= goToPage()>Sign In</ion-label>
+  
+                <div class="align" >
+                  
+                </div>
+                </div> 
+  
+  
+                
+            </ion-card-content>
+          </ion-card>
+  </ion-content>
+  <ion-footer>
+    Designed by &#64;<b>MUT INNOVATIONLAB</b>
+  </ion-footer>
+  
