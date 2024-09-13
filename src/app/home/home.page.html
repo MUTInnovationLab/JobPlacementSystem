@@ -1,20 +1,35 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="welcome-container">
+    <h1>Welcome to Co-op Job Placement</h1>
+    <p class="tagline">Bridging Students and Employers for Successful Careers</p>
+    
+    <div class="feature-grid">
+      <div class="feature-item">
+        <ion-icon name="briefcase" class="feature-icon"></ion-icon>
+        <h2>Find Opportunities</h2>
+        <p>Discover exciting work integrated learning and full-time employment positions.</p>
+      </div>
+      <div class="feature-item">
+        <ion-icon name="school" class="feature-icon"></ion-icon>
+        <h2>Build Your Profile</h2>
+        <p>Create and manage your professional profile to showcase your skills.</p>
+      </div>
+      <div class="feature-item">
+        <ion-icon name="search" class="feature-icon"></ion-icon>
+        <h2>Track Applications</h2>
+        <p>Stay updated on your application status and progress in real-time.</p>
+      </div>
+    </div>
+    
+    <div class="cta-container">
+      <ion-button routerLink="/sign-in" expand="block" size="large" class="get-started-btn">
+        Get Started
+      </ion-button>
+    </div>
+    
+    <div class="info-section">
+      <h3>About Co-op Job Placement</h3>
+      <p>Our system is designed to streamline the job search process for students seeking Work Integrated Learning (WIL) or Full-Time Employment. We connect talented students with leading companies, making the journey from education to career seamless and efficient.</p>
+    </div>
   </div>
 </ion-content>
