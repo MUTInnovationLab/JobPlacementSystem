@@ -1,13 +1,14 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>cv-modal</ion-title>
+    <ion-title class="header-title">Student Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">cv-modal</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <iframe [src]="safePdfUrl" width="100%" height="100%"></iframe>
 </ion-content>

@@ -1,13 +1,250 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>employment-page</ion-title>
-  </ion-toolbar>
+  <nav>
+    <div class="header-container">
+      <a  class="logo">
+        <img src="assets\MUT LOGO.png" alt="Logo">Add User</a>
+      <div class="hamburger-menu" (click)="toggleNav()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <div class="nav-links" [ngClass]="{ 'open': isNavOpen }">
+        <a (click)="goToMenuPage()" class="nav-link">Menu</a>
+        <div class="nav-link business-dropdown">
+          <span><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
+          <div class="dropdown-content">
+            <a (click)="goToValidator()" class="dropdown-item">Profile Validator</a>
+           
+            <a (click)="goToHistory()" class="dropdown-item">History</a>
+            <a (click)="goToWil()" class="dropdown-item">WIL</a>
+            <a routerLink="/staffprofile" class="dropdown-item">Profile</a>
+          </div>
+        </div>
+        <a (click)="goToReports()" class="nav-link">Reports</a>
+        <a (click)="presentConfirmationAlert()" class="nav-link">Sign Out</a>
+      </div>
+    </div>
+  </nav>
+ 
 </ion-header>
+  
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">employment-page</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+ <ion-content [fullscreen]="true" style="--background: url('assets/view2.jpg') no-repeat center / cover;">
+  
+ <ion-grid>
+   <ion-row>
+    <ion-col>
+      <ion-item class="dropdown" lines="none">
+        <ion-label>Faculty</ion-label>
+        <ion-select [(ngModel)]="faculty" (ionChange)="getCourse($event)" (ionChange)="applyFilter()">
+          <ion-select-option value="Natural Sciences">Natural Sciences</ion-select-option>
+          <ion-select-option value="Management Sciences">Management Sciences</ion-select-option>
+          <ion-select-option value="Engineering">Engineering</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+  
+  <ion-col>
+    <ion-item class="dropdown" lines="none">
+      <ion-label>Course</ion-label>
+      <ion-select interface="action-sheet" [(ngModel)]="crs" (ionChange)="applySecondFilter()">
+        <ng-container *ngFor="let cdata of course">
+          <ion-select-option value="{{cdata.course}}"  >
+            <!-- If the value of cdata.course is an array, display the first value; otherwise, display the value itself -->
+
+            {{  cdata.course }}
+          </ion-select-option>
+        </ng-container>
+      </ion-select>
+    </ion-item>
+  </ion-col>
+
+
+  <ion-col>
+    <ion-item item-start>
+      <ion-label>Gender</ion-label>
+      <ion-select [(ngModel)]="genderbase" (ionChange)="genderFilter()">
+        <ion-select-option value="Female">Female</ion-select-option>
+        <ion-select-option value="Male">Male</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-col>
+
+  <ion-col>
+    <ion-item item-start>
+      <ion-label>Grade Average</ion-label>
+      <ion-select [(ngModel)]="gradeAverage" (ionChange)="avg()">
+        <ion-select-option value="50">50% - 59%</ion-select-option>
+        <ion-select-option value="60">60% - 69%</ion-select-option>
+        <ion-select-option value="70">70% - 79%</ion-select-option>
+        <ion-select-option value="80">80% - 89%</ion-select-option>
+        <ion-select-option value="90">90% - 100%</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-col>
+
+
+  <ion-col>
+    <ion-item>
+    <ion-label>Province</ion-label>
+    <ion-select [(ngModel)]="selectedProvince" (ionChange)="applyFilter()">>
+      <ion-select-option *ngFor="let province of provinces" [value]="province">{{ province }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-col>
+  
+<ion-col>
+  <ion-item>
+    <ion-label>Municipality</ion-label>
+    <ion-select interface="action-sheet" [(ngModel)]="selectedMaspala" (ionChange)="applyFilter()">
+      <ion-select-option *ngFor="let municipality of getMunicipalities()" [value]="municipality">{{ municipality }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-col>
+
+ 
+  <ion-searchbar (ionInput)="searchMunicipalities($event)" [(ngModel)]="selectedMunicipality" [value]="selectedMunicipality" placeholder="Search Municipalities" ></ion-searchbar>
+ 
+  </ion-row>
+  <div class="overlay-container" >
+    <ion-list *ngIf="filteredMunicipalities.length > 0" class="overlay-list" color="medium">
+      <ion-item *ngFor="let municipality of filteredMunicipalities" (click)="selectMunicipality(municipality)" color="medium">
+        {{ municipality }}
+      </ion-item>
+    </ion-list>
+    </div>
+
+
+  </ion-grid>
+
+  
+ 
+
+
+
+
+  <div class="table-wrapper">
+    <table class="bordered">
+      <thead class="color">
+        <tr>
+          <th>
+            <ion-checkbox id="select-all-checkbox" [(ngModel)]="selectAllCheckbox" (ionChange)="selectAll()">All</ion-checkbox>
+          </th>
+          <th>
+            <ion-icon name="person"></ion-icon>
+            <br>
+            Student
+          </th>
+          <th>
+            <ion-icon name="albums-outline"></ion-icon>
+            <br>
+            Student No.
+          </th>
+          <th>
+            <ion-icon name="school"></ion-icon>
+            <br>
+            Faculty
+          </th>
+          <th>
+            <ion-icon name="book"></ion-icon>
+            <br>
+            Course
+          </th>
+          <th>
+            <ion-icon name="trending-up"></ion-icon>
+            <br>
+            Grade Average
+          </th>
+          <th>
+            <ion-icon name="location"></ion-icon>
+            <br>
+            City
+          </th>
+          <th>
+            <ion-icon name="male-female-outline"></ion-icon>
+            <br>
+            Gender
+          </th>
+          <th>
+            <ion-icon name="checkmark-done-sharp"></ion-icon>
+            <br>
+            Status
+          </th>
+          <th>
+            <ion-icon name="mail"></ion-icon>
+            <br>
+            Email
+          </th>
+        </tr>
+      </thead>
+      <tbody class="body">
+        <tr *ngFor="let data of tableData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)">
+          <td>
+            <ion-checkbox [(ngModel)]="data.checked" (ionChange)="updateSelectedItems(data,data.AllInOnePdfURL,data.email)"></ion-checkbox>
+          </td>
+          <td class="tooltip-placeholder" (click)="openCVModal(data.cvUrl)" title="Click for more info!!">{{ data.fullName }}</td>
+          <td>{{ data.studentno }}</td>
+          <td>{{ data.faculty }}</td>
+          <td>{{ data.course }}</td>
+          <td class="tooltip" (click)="openViewAcademicRecordModal(data.academicRecordURl)">
+            <ion-badge color="tertiary" style="cursor: pointer;">{{ data.gradeAverage }}</ion-badge>
+            <span class="tooltiptext">Click for more information</span>
+          </td>
+          <td>{{ data.city }}</td>
+          <td>{{ data.gender }}</td>
+          <td>{{ data.status }}</td>
+          <td>{{ data.email }}</td>
+        </tr>
+        <tr>
+          <td colspan="12" class="selected-text">Selected {{ getSelectionCount() }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+
+
+
+
+  <ion-card class="email-card" *ngIf="showEmailFields" style="--background: url('assets/white.jpg') no-repeat center / cover;">
+    <ion-card-content>
+      <ion-item *ngIf="showEmailFields" class="email-field">
+        <ion-input class="email-input" type="text" placeholder="company name" [(ngModel)]="companyNames" required></ion-input>
+        <ion-text class="error-message" *ngIf="isFieldEmpty(companyNames)">*</ion-text>
+      </ion-item>
+  
+      <ion-item *ngIf="showEmailFields" class="email-field">
+        <ion-input class="email-input" type="email" placeholder="Enter email address" [(ngModel)]="recipient" required></ion-input>
+        <ion-text class="error-message" *ngIf="isFieldEmpty(recipient)">*</ion-text>
+      </ion-item>
+  
+      <ion-item *ngIf="showEmailFields" class="email-field">
+        <ion-input class="email-input" type="text" placeholder="Enter subject" [(ngModel)]="subject" required></ion-input>
+        <ion-text class="error-message" *ngIf="isFieldEmpty(subject)">*</ion-text>
+      </ion-item>
+  
+      <ion-textarea class="email-input" placeholder="Message" [(ngModel)]="body" required (ionChange)="formatBody()"></ion-textarea>
+  
+      <ion-button *ngIf="showEmailFields" expand="full" (click)="sendEmail()" class="send-button" [disabled]="!isFormValid()">
+        <ion-icon name="paper-plane-outline" slot="start"></ion-icon> Send
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+  
+  
+  
+
+
+<div class="pagination">
+  <div class="centered-buttons">
+    <button class="pagination-button" [disabled]="currentPage === 1" (click)="previousPage()">Previous</button>
+    <button class="pagination-button" [disabled]="currentPage === totalPages()" (click)="nextPage()">Next</button>
+  </div>
+</div>
+
+
 </ion-content>
+<ion-footer>
+  Designed by <b>MUT INNOVATIONLAB</b>
+</ion-footer>
