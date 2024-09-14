@@ -1,0 +1,2 @@
+npm install swiper
+npm install charts.js

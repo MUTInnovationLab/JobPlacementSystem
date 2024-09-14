@@ -1,9 +1,19 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { IonicModule, ModalController } from '@ionic/angular';
+
+
+
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { LoadingController, NavController, ToastController, AlertController, ModalController } from '@ionic/angular';
-import { DeclineModalPage } from '../decline-modal/decline-modal.page';
+import {  LoadingController,NavController, ToastController , AlertController} from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { ViewAcademicRecordModalPage } from '../view-academic-record-modal/view-academic-record-modal.page';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { DeclineModalComponent } from '../decline-modal/decline-modal.component';
+import { ValidateDocsModalPage } from '../validate-docs-modal/validate-docs-modal.page';
+
 
 @Component({
   selector: 'app-ga-validation',
@@ -61,14 +71,14 @@ export class GaValidationPage implements OnInit {
 
 
   async openViewAcademicRecordModal(pdfUrl:any) {
-    // const modal = await this.modalController.create({
-    //   component: ViewAcademicRecordModalPage,
-    //   componentProps: {
-    //     pdfUrl: pdfUrl
-    //   }
-    // });
+    const modal = await this.modalController.create({
+      component: ViewAcademicRecordModalPage,
+      componentProps: {
+        pdfUrl: pdfUrl
+      }
+    });
   
-    // await modal.present();
+    await modal.present();
   }
 
   // Update the status value to "active"
@@ -76,7 +86,7 @@ export class GaValidationPage implements OnInit {
   async decline(studentId: string, email: string) {
 
     const modal = await this.modalController.create({
-      component: DeclineModalPage,
+      component: DeclineModalComponent,
       componentProps: {
         studentId: studentId,
         email: email
@@ -374,7 +384,7 @@ goToHomePage(): void {
 
 async openDeclineModal() {
   const modal = await this.modalController.create({
-    component: DeclineModalPage,
+    component: DeclineModalComponent,
     componentProps: {
     
     }
@@ -385,23 +395,22 @@ async openDeclineModal() {
 
   async openValidateModal(academicRecordURl:any,cvUrl:any,idURL:any,letterURL:any){
 
-// console.log(academicRecordURl);
-//   const modal = await this.modalController.create({
-//     component: ValidateDocsModalPage,
-//     componentProps: {
+console.log(academicRecordURl);
+  const modal = await this.modalController.create({
+    component: ValidateDocsModalPage,
+    componentProps: {
     
-//       academicRecordURl:academicRecordURl,
-//       cvUrl:cvUrl,
-//       idURL:idURL,
-//       letterURL:letterURL
+      academicRecordURl:academicRecordURl,
+      cvUrl:cvUrl,
+      idURL:idURL,
+      letterURL:letterURL
 
-//     }
-//   });
-//   return await modal.present();
+    }
+  });
+  return await modal.present();
 
 
 
 }
-
 
 }

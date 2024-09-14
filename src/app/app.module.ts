@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule,  CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -9,7 +9,9 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from '../environments/environment';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,9 +23,13 @@ import { FormsModule } from '@angular/forms'; // Import FormsModule
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
-    FormsModule // Add FormsModule to imports
+    FormsModule,
+    HttpClientModule
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

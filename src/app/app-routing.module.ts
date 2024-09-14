@@ -32,10 +32,6 @@ const routes: Routes = [
     loadChildren: () => import('./cv-modal/cv-modal.module').then( m => m.CvModalPageModule)
   },
   {
-    path: 'decline-modal',
-    loadChildren: () => import('./decline-modal/decline-modal.module').then( m => m.DeclineModalPageModule)
-  },
-  {
     path: 'ga-validation',
     loadChildren: () => import('./ga-validation/ga-validation.module').then( m => m.GaValidationPageModule)
   },
@@ -87,6 +83,15 @@ const routes: Routes = [
     path: 'register',
     loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
+  {
+    path: 'view-academic-record-modal',
+    loadChildren: () => import('./view-academic-record-modal/view-academic-record-modal.module').then( m => m.ViewAcademicRecordModalPageModule)
+  },
+  {
+    path: 'validate-docs-modal',
+    loadChildren: () => import('./validate-docs-modal/validate-docs-modal.module').then( m => m.ValidateDocsModalPageModule)
+  },
+
 
 ];
 

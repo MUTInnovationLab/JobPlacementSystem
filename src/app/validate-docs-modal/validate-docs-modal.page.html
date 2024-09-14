@@ -1,0 +1,17 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title class="header-title">Student Academic Record</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <swiper-container>
+    <swiper-slide *ngFor="let url of urlArray">
+      <iframe [src]="url" width="100%" height="100%"></iframe>
+    </swiper-slide>
+  </swiper-container>
+</ion-content>
