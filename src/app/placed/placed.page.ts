@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { NavController,  AlertController } from '@ionic/angular';
+import { NavController,  AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { FilterService } from '../services/filter.service';
 
 @Component({
@@ -28,13 +28,16 @@ export class PlacedPage implements OnInit {
   recommended: any = 0;
   naturalSciencesData: any[] =[];
   currentPage: number = 1;
-  rowsPerPage: number = 10;
-  studentno='';
+rowsPerPage: number = 10;
+studentno='';
 
 
 
   constructor(private firestore: AngularFirestore, 
+    private loadingController: LoadingController, 
+    navCtrl: NavController,
     private auth: AngularFireAuth,
+    private toastController: ToastController,
     private alertController: AlertController,
     private navController: NavController,
     private db: AngularFirestore,
@@ -63,7 +66,8 @@ export class PlacedPage implements OnInit {
 
       this.db.collection('studentProfile', ref => ref.where('status', '==', 'placed'))
         .valueChanges()
-        .subscribe(data =>{  
+        .subscribe(data =>{
+          
         this.userData=data;  
         console.log(data);
         this.tableData = data;
@@ -72,33 +76,6 @@ export class PlacedPage implements OnInit {
     });
   
   }
-
-  applyFilter() {
-    this.filterService.applyFilter(this.faculty).subscribe(data => {
-      this.tableData = data;
-    });
-  }
-
-  applySecondFilter() {
-    this.filterService.applySecondFilter(this.crs).subscribe(data => {
-      this.tableData = data;
-    });
-  }
-
-  levelFilter() {
-    this.filterService.levelFilter(this.level, this.faculty, this.crs).subscribe(data => {
-      this.tableData = data;
-    });
-  }
-
-  avg() {
-    if (this.gradeAverage !== "") {
-      this.filterService.avgFilter(this.gradeAverage, this.crs).subscribe(filteredData => {
-        this.tableData = filteredData;
-      });
-    }
-  }
-
 
   async updateStatus(email: string) {
     const query = this.db.collection('studentProfile', ref => ref.where('email', '==', email));
@@ -217,7 +194,152 @@ export class PlacedPage implements OnInit {
   }); 
   
   }
+  
+  // applyFilter() {
+  
 
+  //   this.firestore
+  //     .collection('studentProfile', ref => ref.where('faculty', '==', this.faculty).where('status', '==', 'placed'))
+  //     .valueChanges()
+  //     .subscribe((data: any[]) => {
+  //       this.tableData = data;
+  //       console.log(data);
+  //     });
+  // }
+  
+  
+  // applySecondFilter(){
+  
+  //   this.firestore
+  //   .collection('studentProfile', ref => ref.where('course', '==', this.crs).where('status', '==', 'placed'))
+  //   .valueChanges()
+  //   .subscribe((data: any[]) => {
+  //     this.tableData = data;
+  //     console.log(data);
+  //   });
+  
+  // }
+  
+  // levelFilter() {
+  //   let query = this.firestore.collection('studentProfile', ref => {
+  //     let result: any = ref;
+  
+  //     if (this.level) {
+  //       result = result.where('level', '==', this.level).where('status', '==', 'placed');
+  //     }
+  
+  //     if (this.faculty) {
+  //       result = result.where('faculty', '==', this.faculty);
+  //     }
+  
+  //     if (this.crs) {
+  //       result = result.where('course', '==', this.crs);
+  //     }
+  
+  //     return result;
+  //   });
+  
+  //   query.valueChanges().subscribe((data: any[]) => {
+  //     let filteredData = data;
+  
+  //     if (this.gradeAverage !== "") {
+  //       const lowerRange = Number(this.gradeAverage);
+  //       const upperRange = lowerRange + 9;
+  
+  //       filteredData = filteredData.filter((student) => {
+  //         const gradeAverage = Number(student.gradeAverage);
+  //         return gradeAverage >= lowerRange && gradeAverage <= upperRange;
+  //       });
+  //     }
+  
+  //     console.log(filteredData);
+  //     this.tableData = filteredData;
+  //   });
+  // }
 
+  
+  
+  // avg() {
+  //   if (this.gradeAverage !== "") {
+  //     const lowerRange = Number(this.gradeAverage);
+  //     const upperRange = lowerRange + 9;
+  
+  //     let query = this.firestore.collection('studentProfile', ref => {
+  //       let result: any = ref.where('status', '==', 'placed');
+  
+  //       if (this.crs) {
+  //         result = result.where('course', '==', this.crs);
+  //       }
+  
+  //       return result;
+  //     });
+  
+  //     query.valueChanges().subscribe(
+  //       (data: any[]) => {
+  //         const filteredData = data.filter((student) => {
+  //           const gradeAverage = Number(student.gradeAverage);
+  //           return gradeAverage >= lowerRange && gradeAverage <= upperRange;
+  //         });
+  
+  //         console.log(filteredData);
+  //         this.tableData = filteredData;
+  //       },
+  //       error => {
+  //         console.error("Error retrieving data:", error);
+  //       }
+  //     );
+  //   }
+  // }
+  
+// Apply filter based on faculty
+applyFilterPlaced() {
+  this.filterService.applyFilterPlaced(this.faculty).subscribe(data => {
+    this.tableData = data;
+  });
+}
+
+// Apply second filter based on course
+applySecondFilterPlaced() {
+  this.filterService.applySecondFilterPlaced(this.crs).subscribe(data => {
+    this.tableData = data;
+  });
+}
+
+// Filter based on level, faculty, and course
+levelFilterPlaced() {
+  this.filterService.levelFilterPlaced(this.level, this.faculty, this.crs).subscribe(data => {
+    let filteredData = data;
+
+    // If a grade range is set, filter further based on grade average
+    if (this.gradeAverage !== '') {
+      const lowerRange = Number(this.gradeAverage);
+      const upperRange = lowerRange + 9;
+
+      filteredData = filteredData.filter(student => {
+        const gradeAvg = Number(student.gradeAverage);
+        return gradeAvg >= lowerRange && gradeAvg <= upperRange;
+      });
+    }
+
+    this.tableData = filteredData;
+  });
+}
+
+// Filter based on grade average
+avg() {
+  this.filterService.avgFilter(this.gradeAverage, this.crs).subscribe(data => {
+    const lowerRange = Number(this.gradeAverage);
+    const upperRange = lowerRange + 9;
+
+    const filteredData = data.filter(student => {
+      const gradeAvg = Number(student.gradeAverage);
+      return gradeAvg >= lowerRange && gradeAvg <= upperRange;
+    });
+
+    this.tableData = filteredData;
+  });
+}
+
+  
 
 }
