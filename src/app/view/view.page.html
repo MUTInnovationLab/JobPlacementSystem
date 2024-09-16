@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      <img src="assets\MUT LOGO.png" alt="MUT Logo" class="header-logo">
+      <img src="assets\vv.png" alt="MUT Logo" class="header-logo">
       MUT STUDENT PROFILE
     </ion-title>
   </ion-toolbar>
@@ -109,6 +109,14 @@
     </ion-card>
   </ng-template>
 </ion-content>
+
+<ion-item *ngIf="this.status === 'recommended' " class="item">
+  <ion-label class="status">Status</ion-label>
+  <ion-select [(ngModel)]="status" (ionChange)="updateStatus(status)">
+    <ion-select-option value="active">Active</ion-select-option>
+    <ion-select-option value="placed">Placed</ion-select-option>
+  </ion-select>
+</ion-item>
 
 <ion-footer class="ion-no-border">
   <ion-toolbar>
