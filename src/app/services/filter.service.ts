@@ -67,4 +67,46 @@ export class FilterService {
       });
     });
   }
+
+
+  filterStudents(level?: string, faculty?: string, course?: string, status?: string, genderbase?: string, studentno?: string) {
+    return this.firestore.collection('studentProfile', ref => {
+      let query: any = ref;
+
+      if (level) {
+        query = query.where('level', '==', level);
+      }
+
+      if (faculty) {
+        query = query.where('faculty', '==', faculty);
+      }
+
+      if (course) {
+        query = query.where('course', '==', course);
+      }
+
+      if (status) {
+        query = query.where('status', '==', status);
+      }
+
+      if (genderbase) {
+        query = query.where('gender', '==', genderbase);
+      }
+
+      if (studentno) {
+        query = query.where('studentno', '==', studentno);
+      }
+
+      return query;
+    }).valueChanges();
+  }
+
+ 
+  filterByYear(selectedYear: number) {
+    return this.firestore.collection('studentProfile', ref => ref
+      .where('createdAt', '>=', new Date(selectedYear, 0, 1))
+      .where('createdAt', '<=', new Date(selectedYear, 11, 31))
+    ).valueChanges();
+  }
+  
 }
