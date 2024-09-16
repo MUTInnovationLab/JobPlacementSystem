@@ -657,3 +657,71 @@ ion-toolbar{
   overflow-y: scroll;
   max-height: 300px; 
 }
+
+//Email card
+.email-card {
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 700px; /* Adjust the width as needed */
+  height: 500px; /* Adjust the height as needed */
+  margin: 10px auto; 
+}
+
+.email-field {
+  margin-bottom: 15px;
+  // --background: transparent;
+  // border: 1px solid #1B69AE;
+  border-radius: 7px;
+}
+
+.email-input {
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  border-radius: 10px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.email-input[placeholder="Message"] {
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --padding-top: 15px;
+  --padding-bottom: 80px; /* Increase the padding-bottom value to make it larger */
+  border-radius: 10px;
+  height: 100px; /* Set a fixed height to create a square shape */
+  resize: none; /* Disable textarea resizing */
+}
+.email-field,
+.email-input {
+  --background: transparent;
+  --border-color: transparent;
+}
+
+.send-button {
+  margin-top: 65px;
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  border-radius: 10px;
+  --background: linear-gradient(to right, #3f51b5, #2196f3);
+  --color: #fff;
+  --ion-ripple-color: #fff;
+}
+
+.send-button ion-icon {
+  margin-right: 8px;
+}
+
+.send-button {
+  --background: var(
+    --ion-color-#006281
+  );
+}
+
+.send-button[disabled] {
+  --background: red; 
+}
