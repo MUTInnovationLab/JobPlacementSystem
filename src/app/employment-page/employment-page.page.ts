@@ -11,7 +11,7 @@ import 'firebase/firestore';
 import { getFirestore, writeBatch, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { MunicipalityProviderService } from '../services/municipality-provider.service';
-
+import { EmailServiceService } from '../services/email-service.service';
 @Component({
   selector: 'app-employment-page',
   templateUrl: './employment-page.page.html',
@@ -19,6 +19,9 @@ import { MunicipalityProviderService } from '../services/municipality-provider.s
 })
 export class EmploymentPagePage implements OnInit {
 
+  // Adjust the path as needed
+
+ 
   
 provinces: string[] = ["Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal", "Limpopo", "Mpumalanga", "North West", "Northern Cape", "Western Cape"];
 
@@ -395,7 +398,8 @@ constructor(
   navCtrl: NavController,
   private auth: AngularFireAuth,
   private navController: NavController,
-  private municipalityService: MunicipalityProviderService
+  private municipalityService: MunicipalityProviderService,
+  private emailService: EmailServiceService
 ) {
   this.getWilData();
   this.municipalities = this.municipalityService.getMunicipalities();
@@ -724,7 +728,7 @@ async presentConfirmationAlert() {
               this.navController.navigateForward('/sign-in');
               this.presentToast();
             })
-            .catch((error) => {});
+            .catch((error) => {console.log(error)});
         },
       },
     ],
@@ -797,6 +801,8 @@ async selectAll() {
 }
 
 userEmailArray: any[] = [];
+
+
 updateSelectedItems(item: any, url: any, email: any) {
   if (item.checked) {
     this.selectedItems.push(item);
@@ -820,187 +826,26 @@ updateSelectedItems(item: any, url: any, email: any) {
 }
 
 async sendEmail() {
-  const loader = await this.loadingController.create({
-    message: 'Sending Email...',
-    cssClass: 'custom-loader-class',
-  });
-  await loader.present();
+  const recipient = this.recipient;
+  const subject = this.subject;
+  const body = this.emailService.formatBody(this.body);
+  const urlArrays = this.urlArrays;
 
-  const url = "https://mutinnovationlab.000webhostapp.com/send_email.php";
-  //  'http://localhost/Co-op-project/co-operation/src/send_email.php';
-
-  const recipient = encodeURIComponent(this.recipient);
-  const subject = encodeURIComponent(this.subject);
-  const body = encodeURIComponent(this.body);
-
-  // Convert the array to a comma-separated string
-  const urlArrayString = encodeURIComponent(this.urlArrays.join(','));
-
-  // Include the array in the query string
-  const query = `recipient=${recipient}&subject=${subject}&body=${body}&urlArrays=${urlArrayString}`;
-
-  const headers = new HttpHeaders().set(
-    'Content-Type',
-    'application/x-www-form-urlencoded'
-  );
-
-  this.http.get(url + '?' + query, { headers: headers }).subscribe(
-    (response) => {
-      this.sendRecommandationNotification();
-      loader.dismiss();
-      console.log(response);
-
-      this.handleEmailResponse(response); // Handle the email response
-    },
-    (error) => {
-      loader.dismiss();
-      // Handle any errors that occurred during the request
-      console.error('Error:', error);
-    }
-  );
-}
-
-formatBody() {
-  this.body = this.body.replace(/\n/g, '<br>');
-}
-
-
-async handleEmailResponse(response: any) {
-  // Check the response and display a pop-up message accordingly
-  if (response === 'Email sent successfully!!!.') {
-    await this.showEmailSentAlert(response);
-
-    // Change the status and company name of selected students to "recommended"
-    const db = getFirestore();
-    const batch = writeBatch(db);
-    const studentStatusCountMap = new Map<string, number>(); // Map to track status change count for each student
-
-    this.selectedItems.forEach((item) => {
-      const docRef = doc(db, 'studentProfile', item.id);
-      const newStatus = 'recommended';
-      const previousCompanyNames = item.companyNames || []; // Get previous company names from the item
-
-      // Check if the current status is not already "recommended"
-      if (item.status !== newStatus) {
-        const updatedCompanyNames = [
-          ...previousCompanyNames,
-          this.companyNames,
-        ]; // Add the new company name to the array
-        const recommendDate = Timestamp.now(); // Current timestamp
-
-        batch.update(docRef, {
-          status: newStatus,
-          companyNames: updatedCompanyNames,
-          recommendDate: recommendDate,
-        });
-
-        // Increment the count for the current student
-        const count =
-          item.status === 'recommended'
-            ? item.count || 0
-            : (item.count || 0) + 1;
-        studentStatusCountMap.set(item.id, count);
-      }
-    });
-
-    await batch.commit();
-    console.log('done');
-
-    // Log the status change count for each student
-    studentStatusCountMap.forEach(async (count, studentId) => {
-      console.log(
-        `Student with ID ${studentId} has been recommended ${count} time(s).`
-      );
-
-      // Update the count in the student's document
-      const docRef = doc(db, 'studentProfile', studentId);
-      await updateDoc(docRef, { count });
-    });
-  } else {
-    await this.showEmailErrorAlert();
+  try {
+    const response = await this.emailService.sendEmail(recipient, subject, body, urlArrays);
+    this.emailService.handleEmailResponse(response, this.selectedItems, this.companyNames);
+    this.sendRecommendationNotification();
+  } catch (error) {
+    console.error('Error:', error);
   }
 }
+formatBody() {
+  this.body =  this.emailService.formatBody(this.body);
+}
+sendRecommendationNotification() {
 
-
-
-async showEmailSentAlert(response: any) {
-  const alert = await this.alertController.create({
-    header: 'Email Sent',
-    message: response,
-    buttons: [
-      {
-        text: 'OK',
-        handler: () => {
-          // Clear the recipient email field
-          this.recipient = '';
-
-          // Uncheck all checkboxes
-          this.tableData.forEach((data) => {
-            data.checked = false;
-          });
-          this.showEmailFields = false;
-        },
-      },
-    ],
-  });
-
-  await alert.present();
+  this.emailService.sendRecommendationNotification(this.recipient, this.userEmailArray);
 }
 
-async showEmailErrorAlert() {
-  const alert = await this.alertController.create({
-    header: 'Email Error',
-    message: 'Email not sent. Please try again.',
-    buttons: [
-      {
-        text: 'OK',
-        handler: () => {
-          // Clear the recipient email field
-          this.recipient = '';
-
-          // Uncheck all checkboxes
-          this.tableData.forEach((data) => {
-            data.checked = false;
-          });
-          this.showEmailFields = false;
-        },
-      },
-    ],
-  });
-
-  await alert.present();
-}
-
-sendRecommandationNotification() {
-  const url = "https://mutinnovationlab.000webhostapp.com/send_recommendation_notification.php";
-  //  'http://localhost/Co-op-project/co-operation/src/send_recommendation_notification.php';
-
-  const recipient = encodeURIComponent(this.recipient);
-  const subject = encodeURIComponent("Recommendation Notice");
-  const body = encodeURIComponent("Your CV has been forwarded to a company, we will be in touch as soon as we get feedback. Please note that this does not mean that you have now been placed.");
-  
-  // Convert the array to a comma-separated string
-  const emailsArray = encodeURIComponent(this.userEmailArray.join(','));
-
-  // Include the array in the query string
-  const query = `recipient=${recipient}&subject=${subject}&body=${body}&emailsArray=${emailsArray}`;
-
-  const headers = new HttpHeaders().set(
-    'Content-Type',
-    'application/x-www-form-urlencoded'
-  );
-
-  this.http.get(url + '?' + query, { headers: headers }).subscribe(
-    () => {
-      console.log(' (notification)'); // Log the response to
-
-      // Handle the response from the PHP file
-    },
-    (error) => {
-      // Handle any errors that occurred during the request
-      console.error('Error:', error + ' (notification)');
-    }
-  );
-}
 
 }
