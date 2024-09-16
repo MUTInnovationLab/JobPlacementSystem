@@ -3,7 +3,8 @@ import { NavController, AlertController, ToastController } from '@ionic/angular'
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav',
@@ -12,7 +13,7 @@ import { switchMap } from 'rxjs/operators';
       <nav>
         <div class="header-container">
           <a class="logo">
-            <img src="assets/MUT LOGO.png" alt="Logo">DASHBOARD
+            <img src="assets/MUT LOGO.png" alt="Logo">{{ currentPageTitle }}
           </a>
           <div class="hamburger-menu" (click)="toggleNav()">
             <div class="bar"></div>
@@ -20,6 +21,7 @@ import { switchMap } from 'rxjs/operators';
             <div class="bar"></div>
           </div>
           <div class="nav-links" [ngClass]="{ 'open': isNavOpen }">
+            <a (click)="goToHome()" class="nav-link">Home</a>
             <a (click)="goToAddUser()" class="nav-link">Add Staff</a>
             <div class="nav-link business-dropdown">
               <span><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
@@ -43,17 +45,63 @@ export class NavComponent implements OnInit {
   isNavOpen: boolean = false;
   userDocument: any;
   user$: Observable<any> = of(null);
+  currentPageTitle: string = 'Dashboard';
 
   constructor(
     private navController: NavController,
     private alertController: AlertController,
     private toastController: ToastController,
     private auth: AngularFireAuth,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.getUser();
+    this.updatePageTitle(); // Add this line to set the initial page title
+    this.setupPageTitleListener();
+  }
+  
+  setupPageTitleListener() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.updatePageTitle();
+      console.log('Route changed, new title:', this.currentPageTitle);
+    });
+  }
+
+  updatePageTitle() {
+    const currentRoute = this.router.url;
+    switch (currentRoute) {
+      case '/menu':
+        this.currentPageTitle = 'Dashboard';
+        break;
+      case '/add-user':
+        this.currentPageTitle = 'Add Staff';
+        break;
+      case '/ga-validation':
+        this.currentPageTitle = 'Profile Validator';
+        break;
+      case '/employment-page':
+        this.currentPageTitle = 'Employment Dashboard';
+        break;
+      case '/history':
+        this.currentPageTitle = 'History Dashboard';
+        break;
+      case '/wil-page':
+        this.currentPageTitle = 'WIL Dashboard';
+        break;
+      case '/staffprofile':
+        this.currentPageTitle = 'Profile';
+        break;
+      case '/reports':
+        this.currentPageTitle = 'Reports Dashboard';
+        break;
+      default:
+        this.currentPageTitle = 'Dashboard';
+    }
+    console.log('Current page title:', this.currentPageTitle);
   }
 
   toggleNav() {
@@ -161,6 +209,10 @@ export class NavComponent implements OnInit {
 
   goToView(): void {
     this.navController.navigateBack('/staffprofile');
+  }
+
+  goToHome(){
+    this.navController.navigateForward("/menu");
   }
 
   async presentConfirmationAlert() {
