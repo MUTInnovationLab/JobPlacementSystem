@@ -168,30 +168,53 @@ export class RecommendedPage implements OnInit {
  
   applyFilter() {
     this.filterService.applyFilter(this.faculty).subscribe(data => {
-      this.tableData = data;
+      // Manually filter for 'recommended' status
+      this.tableData = data.filter(student => student.status === 'recommended');
+      console.log('Filtered by faculty and status:', this.tableData);
     });
   }
 
   applySecondFilter() {
     this.filterService.applySecondFilter(this.crs).subscribe(data => {
-      this.tableData = data;
+      
+      this.tableData = data.filter(student => student.status === 'recommended');
+      console.log('Filtered by course and status:', this.tableData);
     });
   }
 
   levelFilter() {
     this.filterService.levelFilter(this.level, this.faculty, this.crs).subscribe(data => {
-      this.tableData = data;
+      
+      let filteredData = data.filter(student => student.status === 'recommended');
+
+      if (this.gradeAverage !== '') {
+        const lowerRange = Number(this.gradeAverage);
+        const upperRange = lowerRange + 9;
+
+        
+        filteredData = filteredData.filter((student) => {
+          const gradeAverage = Number(student.gradeAverage);
+          return gradeAverage >= lowerRange && gradeAverage <= upperRange;
+        });
+      }
+
+      console.log('Filtered by level, faculty, course, and status:', filteredData);
+      this.tableData = filteredData;
     });
   }
 
   avg() {
-    if (this.gradeAverage !== "") {
-      this.filterService.avgFilter(this.gradeAverage, this.crs).subscribe(filteredData => {
+    if (this.gradeAverage !== '') {
+      this.filterService.avgFilter(this.gradeAverage, this.crs).subscribe(data => {
+        
+        const filteredData = data.filter(student => student.status === 'recommended');
         this.tableData = filteredData;
+        console.log('Filtered by grade average and status:', filteredData);
       });
     }
   }
-  
+
+
 
   async updateStatus(email: string) {
     const query = this.db.collection('studentProfile', ref => ref.where('email', '==', email));
@@ -199,7 +222,7 @@ export class RecommendedPage implements OnInit {
   
     if (snapshot && snapshot.docs.length > 0) {
       const docRef = snapshot.docs[0].ref;
-      const placedDate = Timestamp.now(); // Current timestamp
+      const placedDate = Timestamp.now(); 
   
       await docRef.update({ 
         status: 'placed',
