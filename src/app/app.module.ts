@@ -11,10 +11,10 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from '../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { NavComponent } from './nav.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent,NavComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
