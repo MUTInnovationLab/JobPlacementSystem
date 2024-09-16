@@ -9,6 +9,8 @@
         <div class="bar"></div>
       </div>
       <div class="nav-links" [ngClass]="{ 'open': isNavOpen }">
+        <a (click)="goToMenuPage()" class="nav-link">Menu</a>
+        
         <div class="nav-link business-dropdown">
           <span><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
           <div class="dropdown-content">
@@ -19,7 +21,6 @@
             <a routerLink="/staffprofile" class="dropdown-item">Profile</a>
           </div>
         </div>
-        <a (click)="goToMenuPage()" class="nav-link">Menu</a>
         
         <a (click)="goToReports()" class="nav-link">Reports</a>
         <a (click)="presentConfirmationAlert()" class="nav-link">Sign Out</a>
@@ -29,14 +30,9 @@
  
 </ion-header>
 
-
-
-
-
-
  <ion-content [fullscreen]="true" style="--background: url('assets/view2.jpg') no-repeat center / cover;">
 
- <ion-grid>
+ <ion-grid class="dropdown-grid">
    <ion-row>
     <ion-col>
       <ion-item class="dropdown" lines="none">
@@ -106,11 +102,9 @@
     </ion-select>
   </ion-item>
 </ion-col>
-
-
     <ion-searchbar (ionInput)="searchMunicipalities($event)" [(ngModel)]="selectedMunicipality" [value]="selectedMunicipality" placeholder="Search Municipalities" ></ion-searchbar>
-
   </ion-row>
+
   <div class="overlay-container" >
     <ion-list *ngIf="filteredMunicipalities.length > 0" class="overlay-list" color="medium">
       <ion-item *ngFor="let municipality of filteredMunicipalities" (click)="selectMunicipality(municipality)" color="medium">
