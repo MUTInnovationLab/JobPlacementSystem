@@ -155,7 +155,9 @@ ion-footer {
 .business-dropdown {
   position: relative;
 }
-
+.dropdown-grid{
+  margin-top:90px;
+}
 .dropdown-content {
   display: none;
   position: absolute;
@@ -397,6 +399,24 @@ body {
   font-family: var(--font-family);
   color: var(--dark-color);
 }
+
+.pagination {
+  display: flex;
+  justify-content: center; /* Centers the button group horizontally */
+}
+
+.centered-buttons {
+  display: flex;
+  gap: 20px; /* Optional: Adds spacing between buttons */
+}
+
+.pagination-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+}
+
 
 h1, h2, h3, h4, h5 {
   color: var(--primary-color);

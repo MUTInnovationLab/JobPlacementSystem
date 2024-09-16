@@ -1,13 +1,217 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>history</ion-title>
-  </ion-toolbar>
+  <nav>
+    <div class="header-container">
+      <a  class="logo">
+        <img src="assets\MUT LOGO.png" alt="Logo">Add User</a>
+      <div class="hamburger-menu" (click)="toggleNav()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <div class="nav-links" [ngClass]="{ 'open': isNavOpen }">
+        <a (click)="goToMenuPage()" class="nav-link">Menu</a>
+        <div class="nav-link business-dropdown">
+          <span><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
+          <div class="dropdown-content">
+            <a (click)="goToValidator()" class="dropdown-item">Profile Validator</a>
+            <a (click)="goToEmployment()" class="dropdown-item">Employment</a>
+            
+            <a (click)="goToWil()" class="dropdown-item">WIL</a>
+            <a routerLink="/staffprofile" class="dropdown-item">Profile</a>
+          </div>
+        </div>
+        <a (click)="goToReports()" class="nav-link">Reports</a>
+        <a (click)="presentConfirmationAlert()" class="nav-link">Sign Out</a>
+      </div>
+    </div>
+  </nav>
+ 
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">history</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+
+
+<ion-content [fullscreen]="true" style="--background: url('assets/view1.jpg') no-repeat center / cover;">
+<div >
+ <ion-grid class="dropdown-grid">
+   <ion-row>
+    <ion-col>
+      <ion-item class="dropdown" lines="none">
+        <ion-label>Faculty</ion-label>
+        <ion-select [(ngModel)]="faculty" (ionChange)="getCourse($event)" (ionChange)="applyFilter()">
+          <ion-select-option value="Natural Sciences">Natural Sciences</ion-select-option>
+          <ion-select-option value="Management Sciences">Management Sciences</ion-select-option>
+          <ion-select-option value="Engineering">Engineering</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+  
+  <ion-col>
+    <ion-item class="dropdown" lines="none">
+      <ion-label>Course</ion-label>
+      <ion-select interface="action-sheet" [(ngModel)]="crs" (ionChange)="applySecondFilter()">
+        <ng-container *ngFor="let cdata of course">
+          <ion-select-option value="{{cdata.course}}"  >
+            <!-- If the value of cdata.course is an array, display the first value; otherwise, display the value itself -->
+
+            {{  cdata.course }}
+          </ion-select-option>
+        </ng-container>
+      </ion-select>
+    </ion-item>
+  </ion-col>
+
+
+  <ion-col>
+    <ion-item item-start>
+      <ion-label>WIL/EMPLOYMENT</ion-label>
+      <ion-select interface="popover" placeholder="" [(ngModel)]="level" (ionChange)="filter()">
+        <ion-select-option value="WIL">WIL</ion-select-option>
+        <ion-select-option value="EMPLOYMENT">EMPLOYMENT</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-col>
+
+ <ion-col>
+  <ion-item>
+    <ion-label>YEAR</ion-label>
+    <ion-datetime-button datetime="datetime" presentation="year"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="datetime"  display-formart="YYYY" (ionChange)="yearFunction($event)" presentation="year"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+  </ion-item>
+ </ion-col>
+  
+ 
+ <ion-col>
+  <ion-item item-start>
+    <ion-label>Gender</ion-label>
+    <ion-select [(ngModel)]="genderbase" (ionChange)="filter()">
+      <ion-select-option value="Female">Female</ion-select-option>
+      <ion-select-option value="Male">Male</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-col>
+
+ <ion-col>
+  <ion-item item-start>
+    <ion-label>Status</ion-label>
+    <ion-select interface="popover" placeholder="" [(ngModel)]="status" (ionChange)="filter()">
+      <ion-select-option value="active">Active</ion-select-option>
+      <ion-select-option value="recommended">Recommended</ion-select-option>
+      <ion-select-option value="declined">Declined</ion-select-option>
+      <ion-select-option value="pending">pending</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-col>
+
+ 
+  </ion-row>
+  </ion-grid>
+  
+  <ion-item>
+    <ion-input type="text" placeholder="Search using student number" [(ngModel)]="studentno" (ionChange)="searchByStudentNo()"></ion-input>
+  </ion-item>
+  
+
+
+  <div >
+    <ion-grid>
+      <div class="cent" style="width: 100%; overflow-x: auto;">
+      <table class="bordered">
+        <thead class="color">
+          <tr>
+            <th class="header-cell">
+              <ion-icon name="person"></ion-icon>
+              <br>
+              Student
+            </th>
+            <th class="header-cell">
+              <ion-icon name="albums-outline"></ion-icon>
+              <br>
+              Student No.
+            </th>
+            <th class="header-cell">
+              <ion-icon name="school"></ion-icon>
+              <br>
+              Faculty
+            </th>
+            <th class="header-cell">
+              <ion-icon name="book"></ion-icon>
+              <br>
+              Course
+            </th>
+            <th class="header-cell">
+              <ion-icon name="trending-up"></ion-icon>
+              <br>
+              No of Recommendations
+            </th>
+            <th class="header-cell">
+              <ion-icon name="location"></ion-icon>
+              <br>
+              City
+            </th>
+            <th class="header-cell">
+              <ion-icon name="options"></ion-icon>
+              <br>
+              Status
+            </th>
+            <th class="header-cell">
+              <ion-icon name="mail"></ion-icon>
+              <br>
+              Email
+            </th>
+            <th class="header-cell">
+              <ion-icon name="options"></ion-icon>
+              <br>
+              Company Name
+            </th>
+            <th class="header-cell">
+              <ion-icon name="log-in-outline"></ion-icon>
+              <br>
+              Login Count
+            </th>
+            <th class="header-cell">
+              <ion-icon name="calendar"></ion-icon>
+              <br>
+              Recommend Date
+            </th>
+            <th class="header-cell">
+              <ion-icon name="calendar"></ion-icon>
+              <br>
+              Placed Date
+            </th>
+          </tr>
+  <tbody class="body">
+    <tr *ngFor="let data of tableData" >
+      <td>{{ data.fullName }}</td>
+      <td>{{ data.studentno }}</td>
+      <td>{{ data.faculty }}</td>
+      <td>{{ data.course }}</td>
+      <td class="white-text">{{data.count}}</td>
+      <td>{{ data.city }}</td>
+      <td>{{ data.status }}</td>
+      <td>{{ data.email }}</td>
+      <td>
+        <ng-container *ngFor="let companyName of data.companyNames">
+          {{ companyName }}
+          <br>
+        </ng-container>
+      </td>
+      <td>{{ data.loginCount}}</td>
+      <td class="white-text">{{ data.recommendDate ? (data.recommendDate.toDate() | date:'yyyy-MM-dd') : '' }}</td>
+      <td class="white-text">{{ data.placedDate ? (data.placedDate.toDate() | date:'yyyy-MM-dd') : '' }}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</ion-grid>
+</div>
+</div>
+
 </ion-content>
+<ion-footer>
+  Designed by "&#64;<b>MUT INNOVATIONLAB</b>
+</ion-footer>
