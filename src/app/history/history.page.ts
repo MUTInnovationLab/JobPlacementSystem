@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AlertController, ToastController, LoadingController, NavController } from '@ionic/angular';
+import { FilterService } from '../services/filter.service';
 
 @Component({
   selector: 'app-history',
@@ -45,7 +46,8 @@ loginCount:any;
     private loadingController: 
     LoadingController, navCtrl: NavController,
     private auth: AngularFireAuth,
-    private navController: NavController) { 
+    private navController: NavController,
+    private filterService: FilterService) { 
  
     this.getHistoryData()
   }
@@ -54,19 +56,7 @@ loginCount:any;
    
   }
 
-  yearFunction(event: any) {
-    const selectedYear = new Date(event.detail.value).getFullYear();
-  
-    this.db.collection('studentProfile', ref => ref.where('createdAt', '>=', new Date(selectedYear, 0, 1))
-    .where('createdAt', '<=', new Date(selectedYear, 11, 31)))
-    .valueChanges()
-    .subscribe(data =>{
-      
-    console.log(data);
-     this.tableData = data;
-
-      });
-  }
+ 
   
   isNavOpen: boolean = false;
   toggleNav() {
@@ -91,7 +81,7 @@ loginCount:any;
         this.tableData = data;
       });
     } else {
-      // If the search input is empty, reset the table data to show all entries
+      
       this.getAllData();
     }
   }
@@ -147,30 +137,24 @@ getHistoryData() {
 }
 
 applyFilter() {
-  
-
-  this.firestore
-    .collection('studentProfile', ref => ref.where('faculty', '==', this.faculty))
-    .valueChanges()
-    .subscribe((data: any[]) => {
-      this.tableData = data;
-      console.log(data);
-    });
-}
-
-
-applySecondFilter(){
-
-  this.firestore
-  .collection('studentProfile', ref => ref.where('course', '==', this.crs))
-  .valueChanges()
-  .subscribe((data: any[]) => {
+  this.filterService.applyFilter(this.faculty).subscribe(data => {
     this.tableData = data;
-    console.log(data);
   });
-
 }
-    
+
+applySecondFilter() {
+  this.filterService.applySecondFilter(this.crs).subscribe(data => {
+    this.tableData = data;
+  });
+}
+
+levelFilter() {
+  this.filterService.levelFilter(this.level, this.faculty, this.crs).subscribe(data => {
+    this.tableData = data;
+  });
+}
+
+
 
 statusFilter(event:any){
 this.status= event.detail.value;
@@ -178,45 +162,22 @@ this.status= event.detail.value;
 
 
 filter() {
-  let query = this.firestore.collection('studentProfile', ref => {
-    let result: any = ref;
-     console.log(this.status)
-    if (this.level) {
-      result = result.where('level', '==', this.level);
-    }
-    
-    if (this.faculty) {
-      result = result.where('faculty', '==', this.faculty);
-    }
-    
-    if (this.crs) {
-      result = result.where('course', '==', this.crs);
-    }
-
-    if (this.status) {
-      result = result.where('status', '==', this.status);
-    }
-
-    if (this.genderbase) {
-      result = result.where('gender', '==', this.genderbase);
-    }
-    
-    if (this.studentno) {
-      result = result.where('studentno', '==', this.studentno);
-    }
-    
-    return result;
-  });
+  this.filterService.filterStudents(this.level, this.faculty, this.crs, this.status, this.genderbase, this.studentno)
+    .subscribe(data => {
+      this.tableData = data;
+      console.log(data);
+    });
+}
 
 
+yearFunction(event: any) {
+  const selectedYear = new Date(event.detail.value).getFullYear();
 
-  
-  query.valueChanges().subscribe((data: any[]) => {
+  this.filterService.filterByYear(selectedYear).subscribe(data => {
     this.tableData = data;
     console.log(data);
   });
 }
-
 
 
 

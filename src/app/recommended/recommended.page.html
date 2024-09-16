@@ -1,12 +1,17 @@
 <ion-header>
   <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/reports"></ion-back-button> 
+    </ion-buttons>
+
     <ion-buttons slot="start" class="phuto">
       <img src="assets\MUT LOGO.png" class="image-size">
     </ion-buttons>
     <h2 class="header-title">RECOMMENDED APPLICANTS</h2>
     <ion-buttons slot="end">
       <ion-button>
-          <ion-button id="popover-button"><ion-icon name="person"></ion-icon></ion-button>
+        
        
         <ion-popover trigger="popover-button" [dismissOnSelect]="true">
           <ng-template>

@@ -11,7 +11,9 @@ import 'firebase/firestore';
 import { getFirestore, writeBatch, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { MunicipalityProviderService } from '../services/municipality-provider.service';
+import { FilterService } from '../services/filter.service';
 import { EmailServiceService } from '../services/email-service.service';
+
 @Component({
   selector: 'app-employment-page',
   templateUrl: './employment-page.page.html',
@@ -399,6 +401,7 @@ constructor(
   private auth: AngularFireAuth,
   private navController: NavController,
   private municipalityService: MunicipalityProviderService,
+  private filterService: FilterService,
   private emailService: EmailServiceService
 ) {
   this.getWilData();
@@ -449,7 +452,27 @@ async getCourse(event: any) {
     });
 }
 
+applyFilter() {
+  this.filterService.applyFilter(this.faculty).subscribe(data => {
+    this.tableData = data;
+  });
+}
 
+applySecondFilter() {
+  this.filterService.applySecondFilter(this.crs).subscribe(data => {
+    this.tableData = data;
+  });
+}
+
+
+
+avg() {
+  if (this.gradeAverage !== "") {
+    this.filterService.avgFilter(this.gradeAverage, this.crs).subscribe(filteredData => {
+      this.tableData = filteredData;
+    });
+  }
+}
 
 getWilData() {
   this.db
@@ -479,6 +502,7 @@ async openCVModal(cvUrl: any) {
 
   await modal.present();
 }
+
 
 filter() {
   let query = this.firestore.collection('studentProfile', (ref) => {
@@ -524,17 +548,7 @@ filter() {
 }
 
 
-applyFilter() {
-  this.filter();
-}
 
-applySecondFilter() {
-  this.filter();
-}
-
-avg() {
-  this.filter();
-}
 
 genderFilter() {
    this.filter();
