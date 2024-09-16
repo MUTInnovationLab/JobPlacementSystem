@@ -12,6 +12,17 @@ interface StudentProfile {
   loginCount: number;
   count?: number;
   status?: string;
+  faculty?: string;
+}
+
+interface FacultyStats {
+  femaleCount: number;
+  maleCount: number;
+  wilCount: number;
+  employmentCount: number;
+  placedCount: number;
+  recommendedCount: number;
+  userCount: number;
 }
 
 @Component({
@@ -23,6 +34,7 @@ export class ReportsPage implements OnInit {
   @ViewChild('statsChart') statsChartRef!: ElementRef;
   @ViewChild('levelChart') levelChartRef!: ElementRef;
   @ViewChild('genderChart') genderChartRef!: ElementRef;
+  @ViewChild('facultyComparisonChart') facultyComparisonChartRef!: ElementRef;
 
   isNavOpen = false;
   userDocument: any;
@@ -37,9 +49,16 @@ export class ReportsPage implements OnInit {
   topLoginUsers: StudentProfile[] = [];
   topCVSentUsers: StudentProfile[] = [];
 
+  facultyStats: { [key: string]: FacultyStats } = {
+    'Engineering': { femaleCount: 0, maleCount: 0, wilCount: 0, employmentCount: 0, placedCount: 0, recommendedCount: 0, userCount: 0 },
+    'Management Sciences': { femaleCount: 0, maleCount: 0, wilCount: 0, employmentCount: 0, placedCount: 0, recommendedCount: 0, userCount: 0 },
+    'Natural Sciences': { femaleCount: 0, maleCount: 0, wilCount: 0, employmentCount: 0, placedCount: 0, recommendedCount: 0, userCount: 0 }
+  };
+
   statsChart!: Chart;
   levelChart!: Chart;
   genderChart!: Chart;
+  facultyComparisonChart!: Chart;
 
   constructor(
     private navController: NavController,
@@ -57,6 +76,7 @@ export class ReportsPage implements OnInit {
     this.getTopCVSentUsers();
     this.getEmploymentAndWilCount();
     this.getGenderCount();
+    this.getFacultyStats();
   }
 
   ionViewDidEnter() {
@@ -136,10 +156,29 @@ export class ReportsPage implements OnInit {
     this.updateCharts();
   }
 
+  async getFacultyStats() {
+    const snapshot = await this.db.collection('studentProfile').get().toPromise();
+    snapshot?.docs.forEach(doc => {
+      const data = doc.data() as StudentProfile;
+      if (data.faculty && this.facultyStats[data.faculty]) {
+        const stats = this.facultyStats[data.faculty];
+        stats.userCount++;
+        if (data.gender === 'Female') stats.femaleCount++;
+        if (data.gender === 'Male') stats.maleCount++;
+        if (data.level === 'WIL') stats.wilCount++;
+        if (data.level === 'EMPLOYMENT') stats.employmentCount++;
+        if (data.status === 'placed') stats.placedCount++;
+        if (data.status === 'recommended') stats.recommendedCount++;
+      }
+    });
+    this.updateCharts();
+  }
+
   createCharts() {
     this.createStatsChart();
     this.createLevelChart();
     this.createGenderChart();
+    this.createFacultyComparisonChart();
   }
 
   createStatsChart() {
@@ -236,6 +275,37 @@ export class ReportsPage implements OnInit {
     this.genderChart = new Chart(this.genderChartRef.nativeElement, config);
   }
 
+  createFacultyComparisonChart() {
+    const labels = Object.keys(this.facultyStats);
+    const datasets = [
+      { label: 'Female', data: labels.map(faculty => this.facultyStats[faculty].femaleCount), backgroundColor: 'rgba(255, 99, 132, 0.8)' },
+      { label: 'Male', data: labels.map(faculty => this.facultyStats[faculty].maleCount), backgroundColor: 'rgba(54, 162, 235, 0.8)' },
+      { label: 'WIL', data: labels.map(faculty => this.facultyStats[faculty].wilCount), backgroundColor: 'rgba(255, 206, 86, 0.8)' },
+      { label: 'EMPLOYMENT', data: labels.map(faculty => this.facultyStats[faculty].employmentCount), backgroundColor: 'rgba(75, 192, 192, 0.8)' },
+      { label: 'Placed', data: labels.map(faculty => this.facultyStats[faculty].placedCount), backgroundColor: 'rgba(153, 102, 255, 0.8)' },
+      { label: 'Recommended', data: labels.map(faculty => this.facultyStats[faculty].recommendedCount), backgroundColor: 'rgba(255, 159, 64, 0.8)' },
+      { label: 'Total Users', data: labels.map(faculty => this.facultyStats[faculty].userCount), backgroundColor: 'rgba(199, 199, 199, 0.8)' }
+    ];
+
+    const config: ChartConfiguration = {
+      type: 'bar',
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: 'Faculty Comparison' }
+        },
+        scales: {
+          x: { stacked: false },
+          y: { stacked: false, beginAtZero: true }
+        }
+      }
+    };
+
+    this.facultyComparisonChart = new Chart(this.facultyComparisonChartRef.nativeElement, config);
+  }
+
   updateCharts() {
     if (this.statsChart) {
       this.statsChart.data.datasets[0].data = [this.userCount, this.recommendedCount, this.placedCount, this.employmentCount, this.wilCount];
@@ -248,6 +318,21 @@ export class ReportsPage implements OnInit {
     if (this.genderChart) {
       this.genderChart.data.datasets[0].data = [this.maleCount, this.femaleCount];
       this.genderChart.update();
+    }
+    if (this.facultyComparisonChart) {
+      const labels = Object.keys(this.facultyStats);
+      this.facultyComparisonChart.data.datasets.forEach((dataset, index) => {
+        switch(index) {
+          case 0: dataset.data = labels.map(faculty => this.facultyStats[faculty].femaleCount); break;
+          case 1: dataset.data = labels.map(faculty => this.facultyStats[faculty].maleCount); break;
+          case 2: dataset.data = labels.map(faculty => this.facultyStats[faculty].wilCount); break;
+          case 3: dataset.data = labels.map(faculty => this.facultyStats[faculty].employmentCount); break;
+          case 4: dataset.data = labels.map(faculty => this.facultyStats[faculty].placedCount); break;
+          case 5: dataset.data = labels.map(faculty => this.facultyStats[faculty].recommendedCount); break;
+          case 6: dataset.data = labels.map(faculty => this.facultyStats[faculty].userCount); break;
+        }
+      });
+      this.facultyComparisonChart.update();
     }
   }
 
@@ -287,7 +372,7 @@ export class ReportsPage implements OnInit {
     });
     await toast.present();
   }
-
+    
   goToPage(page: string) {
     this.navController.navigateForward(page);
   }

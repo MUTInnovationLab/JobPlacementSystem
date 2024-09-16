@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button (click)="toggleNav()"></ion-menu-button>
     </ion-buttons>
-    <ion-title>Reports</ion-title>
+    <ion-title>Analytics Dashboard</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -28,31 +28,31 @@
   </ion-menu>
 
   <div class="ion-padding" id="main">
-    <h1 class="page-title">Application Statistics</h1>
+    <h1 class="page-title">Application Analytics</h1>
 
     <ion-grid>
       <ion-row>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="3">
           <ion-card (click)="goToPage('/all-aplications')">
             <ion-card-header>
-              <ion-card-title>Number of Applications</ion-card-title>
+              <ion-card-title>Total Applications</ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <h2>{{ userCount }}</h2>
             </ion-card-content>
           </ion-card>
         </ion-col>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="3">
           <ion-card (click)="goToPage('/recommended')">
             <ion-card-header>
-              <ion-card-title>Recommended Applications</ion-card-title>
+              <ion-card-title>Recommended</ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <h2>{{ recommendedCount }}</h2>
             </ion-card-content>
           </ion-card>
         </ion-col>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="3">
           <ion-card (click)="goToPage('/placed')">
             <ion-card-header>
               <ion-card-title>Placed</ion-card-title>
@@ -62,65 +62,96 @@
             </ion-card-content>
           </ion-card>
         </ion-col>
+        <ion-col size="12" size-md="3">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Conversion Rate</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <h2>{{ (placedCount / userCount * 100).toFixed(2) }}%</h2>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
       </ion-row>
     </ion-grid>
 
-  
-    
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <div class="chart-container">
+            <canvas #statsChart></canvas>
+          </div>
+        </ion-col>
+        <ion-col size="12" size-md="6">
+          <div class="chart-container">
+            <canvas #levelChart></canvas>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <div class="chart-container">
+            <canvas #genderChart></canvas>
+          </div>
+        </ion-col>
+        <ion-col size="12" size-md="6">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>EMPLOYMENT vs WIL Comparison</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p>EMPLOYMENT Count: {{ employmentCount }}</p>
+              <p>WIL Count: {{ wilCount }}</p>
+              <p>Difference: {{ employmentCount - wilCount }}</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
-    <div class="chart-container">
-      <canvas #statsChart></canvas>
+    <h2 class="section-title">Faculty Comparison</h2>
+    <div class="chart-container faculty-comparison-chart">
+      <canvas #facultyComparisonChart></canvas>
     </div>
-    
-    <div class="chart-container">
-      <canvas #levelChart></canvas>
-    </div>
-    
-    <div class="chart-container">
-      <canvas #genderChart></canvas>
-    </div>
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Top 10 Users by Login Count</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-list>
-          <ion-item *ngFor="let user of topLoginUsers">
-            <ion-label>
-              <h2>{{ user.fullName }}</h2>
-              <p>Gender: {{ user.gender }} | Level: {{ user.level }} | Login Count: {{ user.loginCount }}</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Top 10 Users by CV Sent Count (At Risk)</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-list>
-          <ion-item *ngFor="let user of topCVSentUsers">
-            <ion-label>
-              <h2>{{ user.fullName }}</h2>
-              <p>Gender: {{ user.gender }} | Level: {{ user.level }} | CV Sent Count: {{ user.count }}</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>EMPLOYMENT vs WIL Comparison</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>EMPLOYMENT Count: {{ employmentCount }}</p>
-        <p>WIL Count: {{ wilCount }}</p>
-        <p>Difference: {{ employmentCount - wilCount }}</p>
-      </ion-card-content>
-    </ion-card>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Top 10 Users by Login Count</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list>
+                <ion-item *ngFor="let user of topLoginUsers">
+                  <ion-label>
+                    <h2>{{ user.fullName }}</h2>
+                    <p>Gender: {{ user.gender }} | Level: {{ user.level }} | Login Count: {{ user.loginCount }}</p>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="12" size-md="6">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Top 10 Users by CV Sent Count (At Risk)</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list>
+                <ion-item *ngFor="let user of topCVSentUsers">
+                  <ion-label>
+                    <h2>{{ user.fullName }}</h2>
+                    <p>Gender: {{ user.gender }} | Level: {{ user.level }} | CV Sent Count: {{ user.count }}</p>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>
 
