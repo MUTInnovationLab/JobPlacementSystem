@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,15 +9,26 @@ export class FilterService {
 
   constructor(private firestore: AngularFirestore) { }
 
+  // applyFilter(faculty: string): Observable<any[]> {
+  //   return this.firestore
+  //     .collection('studentProfile', ref => ref.where('faculty', '==', faculty).where('status', '==', 'placed'))
+  //     .valueChanges();
+  // }
+
   applyFilter(faculty: string): Observable<any[]> {
+    console.log('Searching for faculty:', faculty); // Debugging line
     return this.firestore
-      .collection('studentProfile', ref => ref.where('faculty', '==', faculty).where('status', '==', 'placed'))
-      .valueChanges();
+      .collection('studentProfile', ref => ref.where('faculty', '==', faculty))
+      .valueChanges()
+      .pipe(
+        tap(results => console.log('Query results:', results)) // Log the results
+      );
   }
+  
 
   applySecondFilter(course: string): Observable<any[]> {
     return this.firestore
-      .collection('studentProfile', ref => ref.where('course', '==', course).where('status', '==', 'placed'))
+      .collection('studentProfile', ref => ref.where('course', '==', course))
       .valueChanges();
   }
 
@@ -67,4 +78,6 @@ export class FilterService {
       });
     });
   }
+
+  
 }
