@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,15 +9,26 @@ export class FilterService {
 
   constructor(private firestore: AngularFirestore) { }
 
+  // applyFilter(faculty: string): Observable<any[]> {
+  //   return this.firestore
+  //     .collection('studentProfile', ref => ref.where('faculty', '==', faculty).where('status', '==', 'placed'))
+  //     .valueChanges();
+  // }
+
   applyFilter(faculty: string): Observable<any[]> {
+    console.log('Searching for faculty:', faculty); // Debugging line
     return this.firestore
-      .collection('studentProfile', ref => ref.where('faculty', '==', faculty).where('status', '==', 'placed'))
-      .valueChanges();
+      .collection('studentProfile', ref => ref.where('faculty', '==', faculty))
+      .valueChanges()
+      .pipe(
+        tap(results => console.log('Query results:', results)) // Log the results
+      );
   }
+  
 
   applySecondFilter(course: string): Observable<any[]> {
     return this.firestore
-      .collection('studentProfile', ref => ref.where('course', '==', course).where('status', '==', 'placed'))
+      .collection('studentProfile', ref => ref.where('course', '==', course))
       .valueChanges();
   }
 
@@ -67,4 +78,46 @@ export class FilterService {
       });
     });
   }
+
+
+  filterStudents(level?: string, faculty?: string, course?: string, status?: string, genderbase?: string, studentno?: string) {
+    return this.firestore.collection('studentProfile', ref => {
+      let query: any = ref;
+
+      if (level) {
+        query = query.where('level', '==', level);
+      }
+
+      if (faculty) {
+        query = query.where('faculty', '==', faculty);
+      }
+
+      if (course) {
+        query = query.where('course', '==', course);
+      }
+
+      if (status) {
+        query = query.where('status', '==', status);
+      }
+
+      if (genderbase) {
+        query = query.where('gender', '==', genderbase);
+      }
+
+      if (studentno) {
+        query = query.where('studentno', '==', studentno);
+      }
+
+      return query;
+    }).valueChanges();
+  }
+
+ 
+  filterByYear(selectedYear: number) {
+    return this.firestore.collection('studentProfile', ref => ref
+      .where('createdAt', '>=', new Date(selectedYear, 0, 1))
+      .where('createdAt', '<=', new Date(selectedYear, 11, 31))
+    ).valueChanges();
+  }
+  
 }
