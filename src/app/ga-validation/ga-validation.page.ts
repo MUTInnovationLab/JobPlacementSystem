@@ -14,6 +14,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { DeclineModalComponent } from '../decline-modal/decline-modal.component';
 import { ValidateDocsModalPage } from '../validate-docs-modal/validate-docs-modal.page';
 
+
 @Component({
   selector: 'app-ga-validation',
   templateUrl: './ga-validation.page.html',

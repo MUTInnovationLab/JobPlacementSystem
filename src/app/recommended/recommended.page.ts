@@ -6,6 +6,7 @@ import {  NavController,AlertController } from '@ionic/angular';
 
 import { Timestamp } from 'firebase/firestore';
 import { FilterService } from '../services/filter.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-recommended',
@@ -141,6 +142,8 @@ export class RecommendedPage implements OnInit {
   }
 
   ngOnInit() {
+
+
   }
 
   //dropdown
@@ -167,53 +170,41 @@ export class RecommendedPage implements OnInit {
     
  
   applyFilter() {
-    this.filterService.applyFilter(this.faculty).subscribe(data => {
-      // Manually filter for 'recommended' status
-      this.tableData = data.filter(student => student.status === 'recommended');
-      console.log('Filtered by faculty and status:', this.tableData);
+    this.filterService.filterByFacultyAndStatus(this.faculty, 'recommended').subscribe((data: any[]) => {
+      this.tableData = data;
+      console.log(data);
     });
   }
 
   applySecondFilter() {
-    this.filterService.applySecondFilter(this.crs).subscribe(data => {
-      
-      this.tableData = data.filter(student => student.status === 'recommended');
-      console.log('Filtered by course and status:', this.tableData);
+    this.filterService.filterByCourseAndStatus(this.crs, 'recommended').subscribe((data: any[]) => {
+      this.tableData = data;
+      console.log(data);
     });
   }
 
   levelFilter() {
-    this.filterService.levelFilter(this.level, this.faculty, this.crs).subscribe(data => {
-      
-      let filteredData = data.filter(student => student.status === 'recommended');
+    this.filterService.filterByLevelFacultyCourse(this.level, this.faculty, this.crs).subscribe((data: any[]) => {
+      let filteredData = data;
 
       if (this.gradeAverage !== '') {
-        const lowerRange = Number(this.gradeAverage);
-        const upperRange = lowerRange + 9;
-
-        
-        filteredData = filteredData.filter((student) => {
-          const gradeAverage = Number(student.gradeAverage);
-          return gradeAverage >= lowerRange && gradeAverage <= upperRange;
-        });
+        filteredData = this.filterService.filterDataByGradeRange(data, this.gradeAverage);
       }
 
-      console.log('Filtered by level, faculty, course, and status:', filteredData);
       this.tableData = filteredData;
+      console.log(filteredData);
     });
   }
 
   avg() {
     if (this.gradeAverage !== '') {
-      this.filterService.avgFilter(this.gradeAverage, this.crs).subscribe(data => {
-        
-        const filteredData = data.filter(student => student.status === 'recommended');
+      this.filterService.filterByGradeRange(this.crs, this.gradeAverage).subscribe((data: any[]) => {
+        const filteredData = this.filterService.filterDataByGradeRange(data, this.gradeAverage);
         this.tableData = filteredData;
-        console.log('Filtered by grade average and status:', filteredData);
+        console.log(filteredData);
       });
     }
   }
-
 
 
   async updateStatus(email: string) {

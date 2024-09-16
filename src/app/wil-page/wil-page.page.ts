@@ -13,6 +13,7 @@ import { CvModalPage } from '../cv-modal/cv-modal.page';
 import { getFirestore, writeBatch, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { MunicipalityProviderService } from '../services/municipality-provider.service'; 
+import { FilterService } from '../services/filter.service';
 
 
 @Component({
@@ -337,8 +338,19 @@ filteredData: any[] = [];
     return this.tableData.filter((data: { checked: any; }) => data.checked).length;
   }
 
-  constructor(private municipalityService: MunicipalityProviderService,private http: HttpClient,private alertController: AlertController,private toastController: ToastController,private modalController: ModalController,private firestore: AngularFirestore,private db: AngularFirestore,
-    private loadingController: LoadingController, navCtrl: NavController,private auth: AngularFireAuth,private navController: NavController) {
+  constructor(private municipalityService: MunicipalityProviderService,
+    private http: HttpClient,
+    private alertController: AlertController,
+    private toastController: ToastController,
+    private modalController: ModalController,
+    private firestore: AngularFirestore,
+    private db: AngularFirestore,
+    private loadingController: LoadingController, 
+    navCtrl: NavController,
+    private auth: AngularFireAuth,
+    private navController: NavController,
+    private filterService: FilterService
+  ) {
     this.getWilData();
     this.municipalities = this.municipalityService.getMunicipalities();
      }
@@ -435,48 +447,20 @@ filteredData: any[] = [];
 
     
       filter() {
-        let query = this.firestore.collection('studentProfile', (ref) => {
-          let filteredQuery = ref.where('status', '==', 'active').where('level', '==', 'WIL');
-      
-          if (this.faculty !== '') {
-            filteredQuery = filteredQuery.where('faculty', '==', this.faculty);
-          }
-      
-          if (this.crs !== '') {
-            filteredQuery = filteredQuery.where('course', '==', this.crs);
-          }
-      
-          if (this.genderbase !== '') {
-            filteredQuery = filteredQuery.where('gender', '==', this.genderbase);
-          }
-      
-          if (this.gradeAverage !== '') {
-            const minGrade = Number(this.gradeAverage);
-            const maxGrade = minGrade + 10;
-            filteredQuery = filteredQuery.where('gradeAverage', '>=', minGrade).where('gradeAverage', '<', maxGrade);
-          }
-    
-          if (this.selectedMunicipality !== '') {
-            filteredQuery = filteredQuery.where('municipality', '==', this.selectedMunicipality);
-          }
-      
-          if (this.selectedProvince) {
-            filteredQuery = filteredQuery.where('provice', '==', this.selectedProvince);
-          }
-      
-          if (this.selectedMaspala) {
-            filteredQuery = filteredQuery.where('municipality', '==', this.selectedMaspala);
-          }
-      
-          return filteredQuery;
-        });
-      
-        query.valueChanges().subscribe((data) => {
+        this.filterService.getFilteredData(
+          this.faculty,
+          this.crs,
+          this.genderbase,
+          this.gradeAverage,
+          this.selectedMunicipality,
+          this.selectedProvince,
+          this.selectedMaspala
+        ).subscribe((data) => {
           console.log(data);
           this.tableData = data; // Assign retrieved data to tableData
         });
       }
-      
+    
       applyFilter() {
         this.filter();
       }
@@ -490,7 +474,7 @@ filteredData: any[] = [];
       }
     
       genderFilter() {
-         this.filter();
+        this.filter();
       }
     
 
