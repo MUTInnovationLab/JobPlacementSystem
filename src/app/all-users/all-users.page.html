@@ -1,13 +1,101 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>all-users</ion-title>
+    <ion-buttons slot="start" >
+      <img src="assets\MUT LOGO.png" class="logo-image">
+    </ion-buttons>
+    <ion-title class="centered-title">REGISTERED ADMIN USERS</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+          <ion-button id="popover-button"><ion-icon name="person"></ion-icon></ion-button>
+       
+        <ion-popover trigger="popover-button" [dismissOnSelect]="true">
+          <ng-template>
+            <ion-content>
+              <ion-list>
+                <ion-item lines="none" [button]="true" [detail]="false" (click)="goToView()"><ion-icon name="eye"></ion-icon> &nbsp;  VIEW PROFILE</ion-item>
+                <ion-item lines="none" [button]="true" [detail]="false" (click)="goToAddUserPage()"><ion-icon name="arrow-back-outline"></ion-icon> &nbsp;  Back to Add User</ion-item>
+                <ion-item lines="none" [button]="true" [detail]="false"  (click)="presentConfirmationAlert()"><ion-icon color="danger" name="exit"></ion-icon>&nbsp;<p>LOGOUT</p></ion-item>
+              </ion-list>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">all-users</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+<ion-content [fullscreen]="true" style="--background: url('assets/tiny.jpg') no-repeat center / cover;">
+  <div class="ion-text-center" class="cent">
+    <ion-card>
+      <ion-card-content>
+        <table class="bordered">
+          <thead class="color">
+            <tr>
+              <th class="header-cell">
+                <ion-icon name="person" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">Name</div>
+              </th>
+              <th class="header-cell">
+                <ion-icon name="mail" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">Email</div>
+              </th>
+              <th class="header-cell">
+                <ion-icon name="briefcase" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">Position</div>
+              </th>
+              <th class="header-cell">
+                <ion-icon name="reorder-two-outline" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">System ID</div>
+              </th>
+              <th class="header-cell">
+                <ion-icon name="documents-outline" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">WIL Role</div>
+              </th>
+              <th class="header-cell">
+                <ion-icon name="school-outline" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">Employment Role</div>
+              </th>
+              <th class="header-cell">
+                <ion-icon name="stats-chart-outline" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">Reports Role</div>
+              </th>
+              <th class="header-cell">
+                <ion-icon name="options-outline" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">History Role</div>
+              </th>
+              <th class="header-cell">
+                <ion-icon name="options-outline" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">Add User Role</div>
+              </th>
+              <th class="header-cell">
+                <ion-icon name="options-outline" size="small" class="small-icon"></ion-icon>
+                <div class="header-text small-text">Profile Validator Role</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="body">
+            <tr *ngFor="let data of tableData">
+              <td class="ion-text-center white-text">{{ data.Name }}</td>
+              <td class="ion-text-center white-text">{{ data.email }}</td>
+              <td class="ion-text-center white-text">{{ data.position }}</td>
+              <td class="ion-text-center white-text">{{ data.staffNumber }}</td>
+              <td class="ion-text-center white-text">{{ data.role.wil }}</td>
+              <td class="ion-text-center white-text">{{ data.role.employment }}</td>
+              <td class="ion-text-center white-text">{{ data.role.statistic }}</td>
+              <td class="ion-text-center white-text">{{ data.role.history }}</td>
+              <td class="ion-text-center white-text">{{ data.role.addUser }}</td>
+              <td class="ion-text-center white-text">{{ data.role.validation }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="total-text ion-text-left">Total Users: {{tableData.length}}</p>
+      </ion-card-content>
+    </ion-card>
+    
+    
+  </div>
 </ion-content>
+<ion-footer>
+  Designed by &#64;<b>MUT INNOVATIONLAB</b>
+</ion-footer>

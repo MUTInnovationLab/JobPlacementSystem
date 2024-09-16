@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { ToastController, AlertController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-all-users',
@@ -7,9 +10,91 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AllUsersPage implements OnInit {
 
-  constructor() { }
+  tableData: any[]=[];
+
+  userData:any;
+
+  constructor(private auth: AngularFireAuth,private toastController: ToastController,private alertController: AlertController,private navController: NavController,private db: AngularFirestore) {
+    this.getHistoryData();
+   }
 
   ngOnInit() {
+    this.getHistoryData();
   }
+  getHistoryData() {
+
+    this.db.collection('registeredStaff')
+      .valueChanges()
+      .subscribe(data =>{
+        
+      this.userData=data;  
+      console.log(data);
+      this.tableData = data;
+      
+  
+  });
+
+}
+
+goToAddUserPage(): void {
+  this.navController.navigateBack('/add-user');
+}
+
+
+async presentConfirmationAlert() {
+  const alert = await this.alertController.create({
+    header: 'Confirmation',
+    message: 'Are you sure you want to SIGN OUT?',
+    buttons: [
+      {
+        text: 'Cancel',
+        role: 'cancel',
+       cssClass: 'my-custom-alert',
+        handler: () => {
+          console.log('Confirmation canceled');
+        }
+      }, {
+        text: 'Confirm',
+        handler: () => {
+         
+          
+          this.auth.signOut().then(() => {
+            this.navController.navigateForward("/sign-in");
+            this.presentToast();
+      
+      
+          }).catch((error) => {
+          
+          });
+
+
+
+        }
+      }
+    ]
+  });
+  await alert.present();
+}
+
+
+async presentToast() {
+  const toast = await this.toastController.create({
+    message: 'SIGNED OUT!',
+    duration: 1500,
+    position: 'top',
+  
+  });
+
+  await toast.present();
+}
+
+goToView(): void {
+  this.navController.navigateBack('/staffprofile');
+}
+
+
+goToHomePage(): void {
+  this.navController.navigateBack('/home');
+}
 
 }

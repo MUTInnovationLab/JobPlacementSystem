@@ -1,0 +1,61 @@
+
+  
+  .white-text {
+    color: rgb(19, 16, 16); /* Sets the text color to white */
+  }
+  
+  ion-content{
+    --background:#ECF0F6;
+    
+}
+
+#popover-button {
+  color: white;
+}
+
+.centered-title {
+    text-align: center; /* Aligns the text to the center */
+    font-size: 1.5rem; /* Increases the font size to 1.5rem (adjust as needed) */
+    font-weight: bold; /* Sets the text to bold */
+    color: rgba(255, 255, 255, 0.966); /* Sets the text color to white */
+    font-size: 24px; /* Adjust the font size as needed */
+    border-radius: 7px; /* Apply a border radius of 7px */
+  }
+  
+  thead{
+    background-color: #C78F15;
+
+  }
+  .header-cell {
+    font-weight: bold; /* Make the header cells bold */
+    color: white; /* Set the text color to white */
+  }
+  
+  .logo-image {
+    
+    width: 100px; /* Adjust the desired width */
+    height: 60px; /* Adjust the desired height */
+ 
+  }
+  .total-text {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .bordered {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  /* Row styles */
+  .body tr:nth-child(even) {
+    background-color: #fffefe;
+  }
+
+  .body tr:nth-child(odd) {
+    background-color: #d3cdcd;
+  }
+  ion-footer {
+    background-color: #300505;
+    color: #fcfcfc;
+    text-align: center;
+  }
