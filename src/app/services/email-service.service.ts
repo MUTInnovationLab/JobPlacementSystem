@@ -101,9 +101,9 @@ export class EmailServiceService {
     await alert.present();
   }
 
-  sendRecommendationNotification(recipient: string, userEmailArray: string[]) {
+  sendRecommendationNotification(recipient: string, userEmailArray: string[], message: string) {
     const url = "https://mutinnovationlab.000webhostapp.com/send_recommendation_notification.php";
-    const query = `recipient=${encodeURIComponent(recipient)}&subject=${encodeURIComponent("Recommendation Notice")}&body=${encodeURIComponent("Your CV has been forwarded...")}&emailsArray=${encodeURIComponent(userEmailArray.join(','))}`;
+    const query = `recipient=${encodeURIComponent(recipient)}&subject=${encodeURIComponent("Recommendation Notice")}&body=${encodeURIComponent(message)}&emailsArray=${encodeURIComponent(userEmailArray.join(','))}`;
 
     const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -112,4 +112,42 @@ export class EmailServiceService {
       (error) => console.error('Error sending notification:', error)
     );
   }
+
+  sendDeclineNotification(recipient: string, subject: string, body: string) {
+    const url = 'https://mutinnovationlab.000webhostapp.com/send_decline_notifictaion.php';
+    const query = `recipient=${encodeURIComponent(recipient)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+
+    return this.http.get(url + '?' + query, { headers: headers }).toPromise()
+      .then(response => {
+        console.log('Email sent: ', response);
+        return response;
+      })
+      .catch(error => {
+        console.error('Error sending email: ', error);
+        throw error;
+      });
+  }
+
+  sendApproveNotification(recipient: string) {
+    const url = 'https://mutinnovationlab.000webhostapp.com/send_approve_notification.php';
+    const subject = 'Application Approval Notice';
+    const body = 'Thank you for submitting your cv, it is now on our database. We will forward it to companies when relevant opportunities arise.';
+
+    const query = `recipient=${encodeURIComponent(recipient)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+
+    return this.http.get(url + '?' + query, { headers: headers }).toPromise()
+      .then(response => {
+        console.log('Approval notification sent: ', response);
+        return response;
+      })
+      .catch(error => {
+        console.error('Error sending approval notification: ', error);
+        throw error;
+      });
+  }
 }
+

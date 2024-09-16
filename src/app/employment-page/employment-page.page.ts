@@ -645,7 +645,7 @@ updateSelectedItems(item: any, url: any, email: any) {
 
   this.showEmailFields = this.selectedItems.length > 0;
 }
-// your cv has been forwarded
+//Your cv has been forwarded
 async sendEmail() {
   const recipient = this.recipient;
   const subject = this.subject;
@@ -666,7 +666,7 @@ formatBody() {
 }
 sendRecommendationNotification() {
 
-  this.emailService.sendRecommendationNotification(this.recipient, this.userEmailArray);
+  this.emailService.sendRecommendationNotification(this.recipient, this.userEmailArray,"Your CV has been forwarded...");
 }
 
 clear(){
