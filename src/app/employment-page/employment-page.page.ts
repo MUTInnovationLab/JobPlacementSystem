@@ -572,203 +572,10 @@ goToView(): void {
 this.navController.navigateBack('/staffprofile');
 }
 ionViewDidEnter() {
-  this.getUser();
+ 
 }
 
-async getUser(): Promise<void> {
-  const user = await this.auth.currentUser;
 
-  if (user) {
-    try {
-      const querySnapshot = await this.db
-        .collection('registeredStaff')
-        .ref.where('email', '==', user.email)
-        .get();
-
-      if (!querySnapshot.empty) {
-        this.userDocument = querySnapshot.docs[0].data();
-        console.log(this.userDocument);
-      }
-    } catch (error) {
-      console.error('Error getting user document:', error);
-    }
-  }
-}
-
-async goToAddUser(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (
-      this.userDocument &&
-      this.userDocument.role &&
-      this.userDocument.role.addUser === 'on'
-    ) {
-      // Navigate to the desired page
-      this.navController.navigateForward('/add-user');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top',
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Add user Page:', error);
-  }
-}
-
-async goToHistory(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (
-      this.userDocument &&
-      this.userDocument.role &&
-      this.userDocument.role.history === 'on'
-    ) {
-      // Navigate to the desired page
-      this.navController.navigateForward('/history');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top',
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to History Page:', error);
-  }
-}
-
-async goToValidator(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (
-      this.userDocument &&
-      this.userDocument.role &&
-      this.userDocument.role.validation === 'on'
-    ) {
-      // Navigate to the desired page
-      this.navController.navigateForward('/ga-validation');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top',
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error(
-      'Error navigating to grade avaerage validator Page:',
-      error
-    );
-  }
-}
-
-async goToReports(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (
-      this.userDocument &&
-      this.userDocument.role &&
-      this.userDocument.role.statistic === 'on'
-    ) {
-      // Navigate to the desired page
-      this.navController.navigateForward('/reports');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top',
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Reports Page:', error);
-  }
-}
-
-async goToWil(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (
-      this.userDocument &&
-      this.userDocument.role &&
-      this.userDocument.role.wil === 'on'
-    ) {
-      // Navigate to the desired page
-      this.navController.navigateForward('/wil-page');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top',
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to WIL Page:', error);
-  }
-}
-
-//sign out
-
-async presentConfirmationAlert() {
-  const alert = await this.alertController.create({
-    header: 'Confirmation',
-    message: 'Are you sure you want to SIGN OUT?',
-    buttons: [
-      {
-        text: 'Cancel',
-        role: 'cancel',
-        cssClass: 'my-custom-alert',
-        handler: () => {
-          console.log('Confirmation canceled');
-        },
-      },
-      {
-        text: 'Confirm',
-        handler: () => {
-          this.auth
-            .signOut()
-            .then(() => {
-              this.navController.navigateForward('/sign-in');
-              this.presentToast();
-            })
-            .catch((error) => {console.log(error)});
-        },
-      },
-    ],
-  });
-  await alert.present();
-}
-
-async presentToast() {
-  const toast = await this.toastController.create({
-    message: 'SIGNED OUT!',
-    duration: 1500,
-    position: 'top',
-  });
-
-  await toast.present();
-}
-
-goToMenuPage(): void {
-  this.navController.navigateForward('/menu').then(() => {
-    window.location.reload();
-  });
-}
-
-goToHomePage(): void {
-  this.navController.navigateBack('/home');
-}
 handleMenuClick() {
   console.log('Menu button clicked');
 }
@@ -838,7 +645,7 @@ updateSelectedItems(item: any, url: any, email: any) {
 
   this.showEmailFields = this.selectedItems.length > 0;
 }
-
+// your cv has been forwarded
 async sendEmail() {
   const recipient = this.recipient;
   const subject = this.subject;
@@ -852,6 +659,7 @@ async sendEmail() {
   } catch (error) {
     console.error('Error:', error);
   }
+  this.clear();
 }
 formatBody() {
   this.body =  this.emailService.formatBody(this.body);
@@ -861,5 +669,11 @@ sendRecommendationNotification() {
   this.emailService.sendRecommendationNotification(this.recipient, this.userEmailArray);
 }
 
+clear(){
+ this.recipient = "";
+this.subject = " ";
+this.body = " ";
+this.urlArrays = [];
+}
 
 }
