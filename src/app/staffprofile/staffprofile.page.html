@@ -1,13 +1,36 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>staffprofile</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="profile-page" style="--background: url('assets/tiny.jpg') no-repeat center / cover;">
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  
+  <div class="profile-container">
+    <div class="profile-details">
+      <ion-list lines="full">
+        <ion-item *ngFor="let detail of userDetails">
+          <ion-label class="label">{{ detail.label }}</ion-label>
+          <ion-text>{{ (user$ | async)?.[detail.property] }}</ion-text>
+        </ion-item>
+      </ion-list>
+      <ion-card>
+        <ion-card-header>Task Granted</ion-card-header>
+        <ion-card-content>
+          <div class="task-grid">
+            <ng-container *ngFor="let task of tasks">
+              <div class="task-col" *ngIf="(user$ | async)?.role[task.role] === 'on'">
+                {{ task.label }}
+              </div>
+            </ng-container>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">staffprofile</ion-title>
-    </ion-toolbar>
-  </ion-header>
+ 
 </ion-content>
+
+<ion-footer>
+  Designed by &#64;<b>MUT INNOVATIONLAB</b>
+</ion-footer>

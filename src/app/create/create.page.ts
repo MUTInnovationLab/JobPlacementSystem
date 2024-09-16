@@ -128,7 +128,7 @@ export class CreatePage implements OnInit {
 
   emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   phoneNumPattern = /^((?:\+27|27)|0)(\d{2})-?(\d{3})-?(\d{4})$/;
-
+  currentDate: string
   constructor(
     private navCtrl: NavController,
     private loadingController: LoadingController,
@@ -143,6 +143,7 @@ export class CreatePage implements OnInit {
     this.provinces = this.municipalityService.provinces;
     this.maspalas = this.municipalityService.maspalas;
     this.getUserToUpdate();
+    this.currentDate = new Date().toISOString();
   }
 
   updateCountry() {

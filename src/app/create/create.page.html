@@ -1,34 +1,3 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <img src="assets\MUT LOGO.png">
-    </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button>
-        <ion-button id="popover-button">
-          <ion-icon name="person"></ion-icon>
-        </ion-button>
-
-        <ion-popover trigger="popover-button" [dismissOnSelect]="true">
-          <ng-template>
-            <ion-content>
-              <ion-list>
-                <ion-item lines="none" [button]="true" [detail]="false" (click)="goToView()">
-                  <ion-icon name="eye"></ion-icon> &nbsp; VIEW PROFILE
-                </ion-item>
-                <ion-item lines="none" [button]="true" [detail]="false" (click)="presentConfirmationAlert()">
-                  <ion-icon color="danger" name="exit"></ion-icon>&nbsp;
-                  <p>LOGOUT</p>
-                </ion-item>
-              </ion-list>
-            </ion-content>
-          </ng-template>
-        </ion-popover>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true" style="--background: url('assets/tiny.jpg') no-repeat center / cover;">
   <ion-title class="title">
     <b>Create profile</b>
@@ -41,7 +10,7 @@
       <ion-row>
         <ion-col>
           <ion-item class="dropdown" lines="none">
-            <ion-select label="Faculty" [(ngModel)]="faculty" (ionChange)="getCourse($event)">
+            <ion-select label="Faculty" [(ngModel)]="faculty" (ionChange)="getCourse($event)" required>
               <ion-select-option value="Natural Sciences">Natural Sciences</ion-select-option>
               <ion-select-option value="Management Sciences">Management Sciences</ion-select-option>
               <ion-select-option value="Engineering">Engineering</ion-select-option>
@@ -51,7 +20,7 @@
 
         <ion-col>
           <ion-item class="dropdown" lines="none">
-            <ion-select label="Course" interface="action-sheet" [(ngModel)]="selectedOption">
+            <ion-select label="Course" interface="action-sheet" [(ngModel)]="selectedOption" required>
               <ng-container *ngFor="let cdata of course">
                 <ion-select-option value="{{cdata.course}}">
                   {{ cdata.course }}
@@ -65,7 +34,7 @@
 
         <ion-col>
           <ion-item class="dropdown" lines="none">
-            <ion-select label="Level" [(ngModel)]="level">
+            <ion-select label="Level" [(ngModel)]="level" required>
               <ion-select-option value="WIL">WIL</ion-select-option>
               <ion-select-option value="EMPLOYMENT">EMPLOYMENT</ion-select-option>
             </ion-select>
@@ -84,18 +53,18 @@
       <ion-card-content>
         <ion-item>
           <ion-label position="stacked">Full Name</ion-label>
-          <ion-input type="text" [(ngModel)]="fullname" name="fullname" required (input)="fullNameError = null;"></ion-input>
+          <ion-input type="text" [(ngModel)]="fullname" name="fullname" required (input)="fullNameError = null;" pattern="^[a-zA-Z\s]*$"></ion-input>
         </ion-item>
         <div class="error-message" *ngIf="fullNameError">{{ fullNameError }}</div>
 
         <ion-item>
           <ion-label position="stacked">Student Number</ion-label>
-          <ion-input type="text" [(ngModel)]="studentno" name="fullname"></ion-input>
+          <ion-input type="text" [(ngModel)]="studentno" name="studentno" required pattern="^[0-9]*$"></ion-input>
         </ion-item>
 
         <ion-item class="dropdown" lines="none">
           <ion-label>Gender</ion-label>
-          <ion-select [(ngModel)]="gender" name="fullname" required (input)="genderError = null;">
+          <ion-select [(ngModel)]="gender" name="gender" required (ionChange)="genderError = null;">
             <ion-select-option value="Male">Male</ion-select-option>
             <ion-select-option value="Female">Female</ion-select-option>
           </ion-select>
@@ -107,7 +76,12 @@
           <ion-datetime-button datetime="birthDatee"></ion-datetime-button>
           <ion-modal [keepContentsMounted]="true">
             <ng-template>
-              <ion-datetime id="birthDatee" (ionChange)="getIonBirthdate($event)" presentation="date"></ion-datetime>
+              <ion-datetime id="birthDatee" 
+                            (ionChange)="getIonBirthdate($event)" 
+                            presentation="date" 
+                            min="1900-01-01" 
+                            [max]="currentDate">
+              </ion-datetime>
             </ng-template>
           </ion-modal>
         </ion-item>
@@ -115,19 +89,19 @@
 
         <ion-item>
           <ion-label position="stacked">Email Address</ion-label>
-          <ion-input type="email" [(ngModel)]="email" name="email" required (input)="emailError = null;" readonly></ion-input>
+          <ion-input type="email" [(ngModel)]="email" name="email" required (input)="emailError = null;" readonly pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"></ion-input>
         </ion-item>
         <div class="error-message" *ngIf="emailError">{{ emailError }}</div>
 
         <ion-item>
           <ion-label position="stacked">Phone Number</ion-label>
-          <ion-input type="tel" [(ngModel)]="phone" name="phone" (input)="phoneError = null;" required></ion-input>
+          <ion-input type="tel" [(ngModel)]="phone" name="phone" (input)="phoneError = null;" required pattern="^[0-9]{10}$"></ion-input>
         </ion-item>
         <div class="error-message" *ngIf="phoneError">{{ phoneError }}</div>
 
         <ion-item>
           <ion-label position="stacked">Alternative Phone Number</ion-label>
-          <ion-input type="tel" [(ngModel)]="altPhone" name="altphone" (input)="phoneError = null;" required></ion-input>
+          <ion-input type="tel" [(ngModel)]="altPhone" name="altphone" (input)="phoneError = null;" required pattern="^[0-9]{10}$"></ion-input>
         </ion-item>
         <div class="error-message" *ngIf="phoneError">{{ phoneError }}</div>
 
@@ -139,14 +113,14 @@
 
         <ion-item>
           <ion-label position="stacked">City</ion-label>
-          <ion-input type="text" [(ngModel)]="city" name="city" (input)="cityError = null;" required></ion-input>
+          <ion-input type="text" [(ngModel)]="city" name="city" (input)="cityError = null;" required pattern="^[a-zA-Z\s]*$"></ion-input>
         </ion-item>
         <div class="error-message" *ngIf="cityError">{{ cityError }}</div>
 
         <ion-col>
           <ion-item>
             <ion-label>Province</ion-label>
-            <ion-select [(ngModel)]="selectedProvince" (ionChange)="updateCountry()">
+            <ion-select [(ngModel)]="selectedProvince" (ionChange)="updateCountry()" required>
               <ion-select-option *ngFor="let province of provinces" [value]="province">{{ province }}</ion-select-option>
               <ion-select-option>International</ion-select-option>
             </ion-select>
@@ -157,7 +131,7 @@
         <ion-col>
           <ion-item>
             <ion-label>Municipality</ion-label>
-            <ion-select interface="action-sheet" [(ngModel)]="selectedMaspala">
+            <ion-select interface="action-sheet" [(ngModel)]="selectedMaspala" required>
               <ion-select-option *ngFor="let municipality of getMunicipalities()" [value]="municipality">{{ municipality }}</ion-select-option>
             </ion-select>
           </ion-item>
@@ -166,13 +140,13 @@
         <br>
         <ion-item>
           <ion-label position="stacked">Country</ion-label>
-          <ion-input type="text" [(ngModel)]="country" name="country" (input)="countryError = null;" required></ion-input>
+          <ion-input type="text" [(ngModel)]="country" name="country" (input)="countryError = null;" required pattern="^[a-zA-Z\s]*$"></ion-input>
         </ion-item>
         <div class="error-message" *ngIf="countryError">{{ countryError }}</div>
 
         <ion-item>
           <ion-label position="stacked">Postal Code</ion-label>
-          <ion-input type="number" [(ngModel)]="code" name="code" (input)="codeError = null;" required></ion-input>
+          <ion-input type="number" [(ngModel)]="code" name="code" (input)="codeError = null;" required min="0" max="9999"></ion-input>
         </ion-item>
         <div class="error-message" *ngIf="codeError">{{ codeError }}</div>
       </ion-card-content>
@@ -185,7 +159,7 @@
   
       <ion-card-content>
         <ion-item>
-          <ion-textarea type="text" [(ngModel)]="objective" required rows="3" cols="20" placeholder="Enter objectives or summary here..."></ion-textarea>
+          <ion-textarea type="text" [(ngModel)]="objective" required rows="3" cols="20" placeholder="Enter objectives or summary here..." maxlength="500"></ion-textarea>
         </ion-item>
       </ion-card-content>
     </ion-card>
@@ -198,11 +172,11 @@
       <ion-card-content>
         <ion-item>
           <ion-label>Qualification:</ion-label>
-          <ion-input [(ngModel)]="qualification.degree"></ion-input>
+          <ion-input [(ngModel)]="qualification.degree" required></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Field of study:</ion-label>
-          <ion-input [(ngModel)]="qualification.studyField"></ion-input>
+          <ion-input [(ngModel)]="qualification.studyField" required></ion-input>
         </ion-item>
         <ion-label position="stacked">Optional e.g. IT(Software development)</ion-label>
         <ion-item>
@@ -212,15 +186,15 @@
         
         <ion-item>
           <ion-label>University/College:</ion-label>
-          <ion-input [(ngModel)]="qualification.universityOrCollege"></ion-input>
+          <ion-input [(ngModel)]="qualification.universityOrCollege" required></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="stacked">Grade Average</ion-label>
-          <ion-input type="number" [(ngModel)]="gradeAverage" required></ion-input>
+          <ion-input type="number" [(ngModel)]="gradeAverage" required min="0" max="100"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Graduation Year:</ion-label>
-          <ion-input placeholder="YYYY/MM/DD" [(ngModel)]="qualification.graduationYear"></ion-input>
+          <ion-input placeholder="YYYY/MM/DD" [(ngModel)]="qualification.graduationYear" required pattern="\d{4}/\d{2}/\d{2}"></ion-input>
         </ion-item>
       </ion-card-content>
     </ion-card>
@@ -233,15 +207,15 @@
       <ion-card-content class="custom-card-content">
         <ion-item>
           <ion-label class="custom-label">Skill</ion-label>
-          <ion-input class="custom-input" [(ngModel)]="skill.skilln"></ion-input>
+          <ion-input class="custom-input" [(ngModel)]="skill.skilln" required></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="custom-label">Description</ion-label>
-          <ion-input class="custom-input" [(ngModel)]="skill.description"></ion-input>
+          <ion-input class="custom-input" [(ngModel)]="skill.description" required></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="custom-label">Level</ion-label>
-          <ion-select class="custom-select" [(ngModel)]="skill.level">
+          <ion-select class="custom-select" [(ngModel)]="skill.level" required>
             <ion-select-option value="Beginner">Beginner</ion-select-option>
             <ion-select-option value="Intermediate">Intermediate</ion-select-option>
             <ion-select-option value="Advanced">Advanced</ion-select-option>
@@ -258,35 +232,35 @@
       <ion-card-content>
         <ion-item>
           <ion-label>Company:</ion-label>
-          <ion-input [(ngModel)]="experience.company"></ion-input>
+          <ion-input [(ngModel)]="experience.company" required></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Job Title:</ion-label>
-          <ion-input [(ngModel)]="experience.jobTitle"></ion-input>
+          <ion-input [(ngModel)]="experience.jobTitle" required></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Employment Period Start:</ion-label>
-          <ion-input placeholder="YYYY/MM/DD" [(ngModel)]="experience.employmentPeriod"></ion-input>
+          <ion-input placeholder="YYYY/MM/DD" [(ngModel)]="experience.employmentPeriod" required pattern="\d{4}/\d{2}/\d{2}"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Employment Period End:</ion-label>
-          <ion-input placeholder="YYYY/MM/DD" [(ngModel)]="experience.employmentPeriodend"></ion-input>
+          <ion-input placeholder="YYYY/MM/DD" [(ngModel)]="experience.employmentPeriodend" required pattern="\d{4}/\d{2}/\d{2}"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Job Description:</ion-label>
-          <ion-input [(ngModel)]="experience.jobDescription"></ion-input>
+          <ion-input [(ngModel)]="experience.jobDescription" required></ion-input>
         </ion-item>
       </ion-card-content>
     </ion-card>
 
     <ion-card *ngFor="let language of languages;">
       <ion-card-header>
-        Licence {{languages.indexOf(language) + 1 }}
+        Language {{languages.indexOf(language) + 1 }}
         <ion-icon name="trash" (click)="removeLanguage(language)"></ion-icon>
       </ion-card-header>
       <ion-card-content>
         <ion-item>
-          <ion-input [(ngModel)]="language.languagen"></ion-input>
+          <ion-input [(ngModel)]="language.languagen" required></ion-input>
         </ion-item>
       </ion-card-content>
     </ion-card>

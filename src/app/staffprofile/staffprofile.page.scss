@@ -1,0 +1,138 @@
+:root {
+    --ion-background-color: #26425A;
+    --primary-color: #006281;
+    --secondary-color: #802B28;
+    --text-color: #ffffff;
+    --card-background: rgba(255, 255, 255, 0.1);
+    --card-border: rgba(255, 255, 255, 0.2);
+  }
+  
+  .profile-page {
+  
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+  
+  .profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .profile-details {
+    width: 100%;
+    max-width: 500px;
+    background-color: var(--card-background);
+    border: 1px solid var(--card-border);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .profile-details:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  }
+  
+  ion-list {
+    background: transparent;
+  }
+  
+  ion-item {
+    --background: transparent;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --padding-start: 0;
+    --inner-padding-end: 0;
+  }
+  
+  ion-label {
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  
+  ion-text {
+    color: var(--text-color);
+    font-size: 1em;
+  }
+  
+  ion-card {
+    margin-top: 30px;
+    background-color: var(--secondary-color);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  ion-card-header {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-color);
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 15px;
+    text-align: center;
+  }
+  
+  ion-card-content {
+    padding: 20px;
+  }
+  
+  .task-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+  }
+  
+  .task-col {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    color: var(--text-color);
+    transition: background-color 0.3s ease;
+  }
+  
+  .task-col:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  @media (max-width: 768px) {
+    .profile-details {
+      padding: 20px;
+    }
+  
+    ion-label, ion-text {
+      font-size: 0.9em;
+    }
+  
+    .task-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .profile-container {
+      padding: 10px;
+    }
+  
+    .profile-details {
+      padding: 15px;
+    }
+  
+    ion-card-header {
+      font-size: 1.1em;
+    }
+  
+    .task-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Existing styles for loader, modal, etc. remain unchanged */
