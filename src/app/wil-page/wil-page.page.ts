@@ -670,6 +670,7 @@ const message: string = "Your CV has been forwarded to a company, we will be in 
 }
 
 clear(){
+  this.companyNames =[];
  this.recipient = "";
 this.subject = " ";
 this.body = " ";

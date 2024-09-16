@@ -706,6 +706,7 @@ sendRecommendationNotification() {
 }
 
 clear(){
+  this.companyNames =[];
  this.recipient = "";
 this.subject = " ";
 this.body = " ";

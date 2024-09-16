@@ -7,10 +7,11 @@
 }
 
 .center img {
-  max-width: 100%;          /* Ensures the image doesn't overflow its container */
-  height: 100px;             /* Maintains aspect ratio */
+  max-width: 150%;          /* Ensures the image doesn't overflow its container */
+  height: 150px;             /* Maintains aspect ratio */
   z-index: 1;
 }
+
   ion-content {
     --background:#fff;
   }
