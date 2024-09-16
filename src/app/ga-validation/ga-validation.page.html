@@ -1,37 +1,6 @@
-<ion-header [translucent]="true">
-  <nav>
-    <div class="header-container">
-      <a  class="logo">
-        <img src="assets\MUT LOGO.png" alt="Logo">Profile Validator</a>
-      <div class="hamburger-menu" (click)="toggleNav()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-      </div>
-      <div class="nav-links" [ngClass]="{ 'open': isNavOpen }">
-        <a (click)="goToMenuPage()" class="nav-link">Menu</a>
-        <div class="nav-link business-dropdown">
-          <span><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
-          <div class="dropdown-content">
-           
-            <a (click)="goToEmployment()" class="dropdown-item">Employment</a>
-            <a (click)="goToHistory()" class="dropdown-item">History</a>
-            <a (click)="goToWil()" class="dropdown-item">WIL</a>
-            <a (click)="goToView()" class="dropdown-item">Profile</a>
-          </div>
-        </div>
-        <a (click)="goToReports()" class="nav-link">Reports</a>
-        <a (click)="presentConfirmationAlert()" class="nav-link">Sign Out</a>
-      </div>
-    </div>
-  </nav>
- 
-</ion-header>
-
-
 <ion-content [fullscreen]="true" style="--background: url('assets/view2.jpg') no-repeat center / cover;">
   <div class="cent">
-    <ion-grid>
+    <ion-grid class="dropdown-grid">
       <table class="bordered">
         <thead class="color">
           <tr>

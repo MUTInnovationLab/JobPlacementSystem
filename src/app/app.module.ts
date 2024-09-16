@@ -1,4 +1,4 @@
-import { NgModule,  CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -12,9 +12,14 @@ import { environment } from '../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NavComponent } from './nav.component';
+import { DeclineModalComponent } from './decline-modal/decline-modal.component';
 
 @NgModule({
-  declarations: [AppComponent,NavComponent],
+  declarations: [
+    AppComponent, 
+    NavComponent, 
+    DeclineModalComponent // Add DeclineModalComponent here
+  ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -24,10 +29,10 @@ import { NavComponent } from './nav.component';
     AngularFirestoreModule,
     AngularFireStorageModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    IonicModule.forRoot() // Ensure IonicModule is imported here
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

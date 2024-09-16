@@ -13,6 +13,7 @@ import { CvModalPage } from '../cv-modal/cv-modal.page';
 import { getFirestore, writeBatch, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { MunicipalityProviderService } from '../services/municipality-provider.service'; 
+import { EmailServiceService } from '../services/email-service.service';
 import { FilterService } from '../services/filter.service';
 
 
@@ -349,7 +350,8 @@ filteredData: any[] = [];
     navCtrl: NavController,
     private auth: AngularFireAuth,
     private navController: NavController,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private emailService: EmailServiceService
   ) {
     this.getWilData();
     this.municipalities = this.municipalityService.getMunicipalities();
@@ -519,142 +521,12 @@ async openCVModal(cvUrl:any) {
   await modal.present();
 }
 
-goToView(): void {
-  this.navController.navigateBack('/staffprofile');
-}
 
 //Previlages
 
 ionViewDidEnter() {
-  this.getUser();
+
 }
-
-async getUser(): Promise<void> {
-  const user = await this.auth.currentUser;
-
-  if (user) {
-    try {
-      const querySnapshot = await this.db
-        .collection('registeredStaff')
-        .ref.where('email', '==', user.email)
-        .get();
-
-      if (!querySnapshot.empty) {
-        this.userDocument = querySnapshot.docs[0].data();
-        console.log(this.userDocument);
-      }
-    } catch (error) {
-      console.error('Error getting user document:', error);
-    }
-  }
-}
-
-async goToAddUser(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.addUser === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/add-user');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Add user Page:', error);
-  }
-}
-
-async goToValidator(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.validation === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/ga-validation');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Grade validation Page:', error);
-  }
-}
-
-
-
-async goToEmployment(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.employment === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/employment-page');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Employment Page:', error);
-  }
-}
-
-
-async goToHistory(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.history === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/history');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to History Page:', error);
-  }
-}
-
-async  goToReports(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.statistic === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/reports');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Reports Page:', error);
-  }
-}
-
-
-
-//sign out
 
 async presentConfirmationAlert() {
   const alert = await this.alertController.create({
@@ -709,17 +581,6 @@ async presentToast() {
   navigateBasedOnRole(arg0: string): Promise<void> {
     throw new Error('Method not implemented.');
   }
-
-
-goToMenuPage(): void {
-  this.navController.navigateForward('/menu').then(() => {
-    window.location.reload();
-  });
-}
-
-goToHomePage(): void {
-  this.navController.navigateBack('/home');
-}
 
 
 async selectAll() {
@@ -781,221 +642,39 @@ console.log("singleE",this.userEmailArray);
   if(this.userEmailArray.length==0){
    this.selectAllCheckbox=false;
   }
-
-
-
-
-
   this.showEmailFields = this.selectedItems.length > 0;
 }
 
 
-
-
-
-
-
 async sendEmail() {
-  const loader = await this.loadingController.create({
-    message: 'Sending Email...',
-    cssClass: 'custom-loader-class'
-  });
-  await loader.present();
+  const recipient = this.recipient;
+  const subject = this.subject;
+  const body = this.emailService.formatBody(this.body);
+  const urlArrays = this.urlArrays;
 
-
-
-const url = 'http://localhost/Co-op-project/co-operation/src/send_email.php';
-
-
-
-
-
-const recipient = encodeURIComponent(this.recipient);
-const subject = encodeURIComponent(this.subject);
-const body = encodeURIComponent(this.body);
-
-// Convert the array to a comma-separated string
-const urlArrayString = encodeURIComponent(this.urlArrays.join(','));
-
-// Include the array in the query string
-const query = `recipient=${recipient}&subject=${subject}&body=${body}&urlArrays=${urlArrayString}`;
-
-const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-
-this.http.get(url + '?' + query, { headers: headers })
-  .subscribe(
-    response => {
-      this.sendRecommandationNotification();
-      loader.dismiss();
-        console.log(response); 
- 
-        this.handleEmailResponse(response); // Handle the email response
-      
-      },
-      error => {
-        loader.dismiss();
-        // Handle any errors that occurred during the request
-        console.error('Error:', error);
-        
-      }
-    );
-   
-}
-
-
-formatBody() {
-  this.body = this.body.replace(/\n/g, '<br>');
-}
-handleMenuClick() {
-  console.log('Menu button clicked');
-}
-
-
-async handleEmailResponse(response: any) {
-  // Check the response and display a pop-up message accordingly
-  if (response === 'Email sent successfully!!!.') {
-    await this.showEmailSentAlert(response);
-
-    // Change the status and company name of selected students to "recommended"
-    const db = getFirestore();
-    const batch = writeBatch(db);
-    const studentStatusCountMap = new Map<string, number>(); // Map to track status change count for each student
-
-    this.selectedItems.forEach((item) => {
-      const docRef = doc(db, 'studentProfile', item.id);
-      const newStatus = 'recommended';
-      const previousCompanyNames = item.companyNames || []; // Get previous company names from the item
-
-      // Check if the current status is not already "recommended"
-      if (item.status !== newStatus) {
-        const updatedCompanyNames = [
-          ...previousCompanyNames,
-          this.companyNames,
-        ]; // Add the new company name to the array
-        const recommendDate = Timestamp.now(); // Current timestamp
-
-        batch.update(docRef, {
-          status: newStatus,
-          companyNames: updatedCompanyNames,
-          recommendDate: recommendDate,
-        });
-
-        // Increment the count for the current student
-        const count =
-          item.status === 'recommended'
-            ? item.count || 0
-            : (item.count || 0) + 1;
-        studentStatusCountMap.set(item.id, count);
-      }
-    });
-
-    await batch.commit();
-    console.log('done');
-
-    // Log the status change count for each student
-    studentStatusCountMap.forEach(async (count, studentId) => {
-      console.log(
-        `Student with ID ${studentId} has been recommended ${count} time(s).`
-      );
-
-      // Update the count in the student's document
-      const docRef = doc(db, 'studentProfile', studentId);
-      await updateDoc(docRef, { count });
-    });
-  } else {
-    await this.showEmailErrorAlert();
+  try {
+    const response = await this.emailService.sendEmail(recipient, subject, body, urlArrays);
+    this.emailService.handleEmailResponse(response, this.selectedItems, this.companyNames);
+    this.sendRecommendationNotification();
+  } catch (error) {
+    console.error('Error:', error);
   }
+  this.clear();
+}
+formatBody() {
+  this.body =  this.emailService.formatBody(this.body);
+}
+sendRecommendationNotification() {
+const message: string = "Your CV has been forwarded to a company, we will be in touch as soon as we get feedback. Please note that this does not mean that you have now been placed.";
+  this.emailService.sendRecommendationNotification(this.recipient, this.userEmailArray,message);
 }
 
-
-async showEmailSentAlert(response:any) {
-  const alert = await this.alertController.create({
-    header: 'Email Sent',
-    message: response,
-    buttons: [
-      {
-        text: 'OK',
-        handler: () => {
-          // Clear the recipient email field
-          this.recipient = '';
-          
-          // Uncheck all checkboxes
-          this.tableData.forEach((data) => {
-            data.checked = false;
-          });
-          this.showEmailFields = false;
-        }
-      }
-    ]
-  });
-
-  await alert.present();
-}
-
-async showEmailErrorAlert() {
-  const alert = await this.alertController.create({
-    header: 'Email Error',
-    message: 'Email not sent. Please try again.',
-    buttons: [
-      {
-        text: 'OK',
-        handler: () => {
-          // Clear the recipient email field
-          this.recipient = '';
-          
-          // Uncheck all checkboxes
-          this.tableData.forEach((data) => {
-            data.checked = false;
-          });
-          this.showEmailFields = false;
-        }
-      }
-    ]
-  });
-
-  await alert.present();
-
-
-}
-
-
-  sendRecommandationNotification(){
-
-  const url = 'https://mutinnovationlab.000webhostapp.com/send_recommendation_notification.php';
-
-  //'http://localhost/Co-op-project/co-operation/src/send_recommendation_notification.php';
-
-  const recipient = encodeURIComponent(this.recipient);
-  const subject = encodeURIComponent("Recommendation Notice");
-  const body = encodeURIComponent("Your CV has been forwarded to a company, we will be in touch as soon as we get feedback. Please note that this does not mean that you have now been placed.");
-  
-  // Convert the array to a comma-separated string
-  const emailsArray = encodeURIComponent(this.userEmailArray.join(','));
-  
-  // Include the array in the query string
-  const query = `recipient=${recipient}&subject=${subject}&body=${body}&emailsArray=${emailsArray}`;
-  
-  const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-  
-  this.http.get(url + '?' + query, { headers: headers })
-    .subscribe(
-      () => {
-      
-        console.log(" (notification)"); // Log the response to   
-    
-        // Handle the response from the PHP file
-      
-      },
-      error => {
-        
-        // Handle any errors that occurred during the request
-        console.error('Error:', error +" (notification)");
-      }
-    );
-  
-  
-  
-
+clear(){
+  this.companyNames =[];
+ this.recipient = "";
+this.subject = " ";
+this.body = " ";
+this.urlArrays = [];
 }
 
 }
