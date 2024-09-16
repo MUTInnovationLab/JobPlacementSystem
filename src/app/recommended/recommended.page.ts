@@ -5,6 +5,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import {  NavController,AlertController } from '@ionic/angular';
 
 import { Timestamp } from 'firebase/firestore';
+import { FilterService } from '../services/filter.service';
 
 @Component({
   selector: 'app-recommended',
@@ -40,7 +41,8 @@ export class RecommendedPage implements OnInit {
     private auth: AngularFireAuth,
     private alertController: AlertController,
     private navController: NavController,
-    private db: AngularFirestore) {
+    private db: AngularFirestore,
+    private filterService: FilterService) {
 
       this.getAllData();
      }
@@ -163,100 +165,30 @@ export class RecommendedPage implements OnInit {
   }
   
     
-  
+ 
   applyFilter() {
-  
-
-    this.firestore
-      .collection('studentProfile', ref => ref.where('faculty', '==', this.faculty).where('status', '==', 'recommended'))
-      .valueChanges()
-      .subscribe((data: any[]) => {
-        this.tableData = data;
-        console.log(data);
-      });
-  }
-  
-  
-  applySecondFilter(){
-  
-    this.firestore
-    .collection('studentProfile', ref => ref.where('course', '==', this.crs).where('status', '==', 'recommended'))
-    .valueChanges()
-    .subscribe((data: any[]) => {
+    this.filterService.applyFilter(this.faculty).subscribe(data => {
       this.tableData = data;
-      console.log(data);
     });
-  
   }
-  
+
+  applySecondFilter() {
+    this.filterService.applySecondFilter(this.crs).subscribe(data => {
+      this.tableData = data;
+    });
+  }
+
   levelFilter() {
-    let query = this.firestore.collection('studentProfile', ref => {
-      let result: any = ref;
-  
-      if (this.level) {
-        result = result.where('level', '==', this.level).where('status', '==', 'recommended');
-      }
-  
-      if (this.faculty) {
-        result = result.where('faculty', '==', this.faculty);
-      }
-  
-      if (this.crs) {
-        result = result.where('course', '==', this.crs);
-      }
-  
-      return result;
-    });
-  
-    query.valueChanges().subscribe((data: any[]) => {
-      let filteredData = data;
-  
-      if (this.gradeAverage !== "") {
-        const lowerRange = Number(this.gradeAverage);
-        const upperRange = lowerRange + 9;
-  
-        filteredData = filteredData.filter((student) => {
-          const gradeAverage = Number(student.gradeAverage);
-          return gradeAverage >= lowerRange && gradeAverage <= upperRange;
-        });
-      }
-  
-      console.log(filteredData);
-      this.tableData = filteredData;
+    this.filterService.levelFilter(this.level, this.faculty, this.crs).subscribe(data => {
+      this.tableData = data;
     });
   }
 
-
-  
   avg() {
     if (this.gradeAverage !== "") {
-      const lowerRange = Number(this.gradeAverage);
-      const upperRange = lowerRange + 9;
-  
-      let query = this.firestore.collection('studentProfile', ref => {
-        let result: any = ref.where('status', '==', 'recommended');
-  
-        if (this.crs) {
-          result = result.where('course', '==', this.crs);
-        }
-  
-        return result;
+      this.filterService.avgFilter(this.gradeAverage, this.crs).subscribe(filteredData => {
+        this.tableData = filteredData;
       });
-  
-      query.valueChanges().subscribe(
-        (data: any[]) => {
-          const filteredData = data.filter((student) => {
-            const gradeAverage = Number(student.gradeAverage);
-            return gradeAverage >= lowerRange && gradeAverage <= upperRange;
-          });
-  
-          console.log(filteredData);
-          this.tableData = filteredData;
-        },
-        error => {
-          console.error("Error retrieving data:", error);
-        }
-      );
     }
   }
   
@@ -280,7 +212,4 @@ export class RecommendedPage implements OnInit {
   }
   
   
-  
-
-
 }
