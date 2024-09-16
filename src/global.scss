@@ -48,17 +48,15 @@
   --transition: all 0.3s ease;
 }
 
-
 ion-toolbar {
   --background: #006281; 
-  color:#fff;
+  color: #fff;
   text-align: center;
 }
 
-
 body {
   font-family: var(--font-family);
-  color: var(--dark-color);
+  color: var(--light-color); /* Changed to light color (white) */
   margin: 0;
   padding: 0;
 }
@@ -90,7 +88,7 @@ body {
 .logo {
   font-size: 1.5em;
   font-weight: bold;
-  color: var(--primary-color);
+  color: var(--light-color); /* Changed to light color (white) */
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -120,11 +118,11 @@ ion-footer {
 .error-message{
   color: red;
   font-size: small;
-  font-family:Arial;
+  font-family: Arial;
 }
 
 .nav-link {
-  color: var(--dark-color);
+  color: var(--light-color); /* Changed to light color (white) */
   text-decoration: none;
   font-weight: 500;
   padding: 10px 0;
@@ -140,12 +138,12 @@ ion-footer {
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: var(--primary-color);
+  background-color: var(--light-color); /* Changed to light color (white) */
   transition: var(--transition);
 }
 
 .nav-link:hover {
-  color: var(--dark-color);
+  color: var(--light-color); /* Changed to light color (white) */
 }
 
 .nav-link:hover::after {
@@ -155,13 +153,15 @@ ion-footer {
 .business-dropdown {
   position: relative;
 }
+
 .dropdown-grid{
-  margin-top:90px;
+  margin-top: 90px;
 }
+
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: var(--light-color);
+  background-color: var(--primary-color); /* Changed to primary color for contrast */
   min-width: 200px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
@@ -179,15 +179,15 @@ ion-footer {
 
 .dropdown-item {
   display: block;
-  color: var(--dark-color);
+  color: var(--light-color); /* Changed to light color (white) */
   padding: 12px 20px;
   text-decoration: none;
   transition: var(--transition);
 }
 
 .dropdown-item:hover {
-  background-color: #f0f0f0;
-  color: var(--primary-color);
+  background-color: rgba(255, 255, 255, 0.1); /* Changed for better contrast */
+  color: var(--light-color);
 }
 
 /* Hamburger Menu */
@@ -203,7 +203,7 @@ ion-footer {
   display: block;
   width: 25px;
   height: 3px;
-  background-color: var(--dark-color);
+  background-color: var(--light-color); /* Changed to light color (white) */
   margin: 5px 0;
   transition: var(--transition);
 }
@@ -224,7 +224,7 @@ ion-footer {
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
-    background-color: var(--light-color);
+    background-color: var(--primary-color); /* Changed to primary color */
     position: absolute;
     top: var(--nav-height);
     left: 0;
@@ -285,7 +285,7 @@ ion-footer {
 
 /* Scroll behavior */
 .header-container.scrolled {
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(0, 98, 129, 0.95); /* Changed to semi-transparent primary color */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
