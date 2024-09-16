@@ -14,6 +14,8 @@ import { getFirestore, writeBatch, doc, updateDoc, Timestamp } from 'firebase/fi
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { MunicipalityProviderService } from '../services/municipality-provider.service'; 
 import { EmailServiceService } from '../services/email-service.service';
+import { FilterService } from '../services/filter.service';
+
 
 @Component({
   selector: 'app-wil-page',
@@ -337,8 +339,20 @@ filteredData: any[] = [];
     return this.tableData.filter((data: { checked: any; }) => data.checked).length;
   }
 
-  constructor(private municipalityService: MunicipalityProviderService,private http: HttpClient,private alertController: AlertController,private toastController: ToastController,private modalController: ModalController,private firestore: AngularFirestore,private db: AngularFirestore,
-    private loadingController: LoadingController, navCtrl: NavController,private auth: AngularFireAuth,private navController: NavController,private emailService: EmailServiceService) {
+  constructor(private municipalityService: MunicipalityProviderService,
+    private http: HttpClient,
+    private alertController: AlertController,
+    private toastController: ToastController,
+    private modalController: ModalController,
+    private firestore: AngularFirestore,
+    private db: AngularFirestore,
+    private loadingController: LoadingController, 
+    navCtrl: NavController,
+    private auth: AngularFireAuth,
+    private navController: NavController,
+    private filterService: FilterService,
+    private emailService: EmailServiceService
+  ) {
     this.getWilData();
     this.municipalities = this.municipalityService.getMunicipalities();
      }
@@ -435,48 +449,20 @@ filteredData: any[] = [];
 
     
       filter() {
-        let query = this.firestore.collection('studentProfile', (ref) => {
-          let filteredQuery = ref.where('status', '==', 'active').where('level', '==', 'WIL');
-      
-          if (this.faculty !== '') {
-            filteredQuery = filteredQuery.where('faculty', '==', this.faculty);
-          }
-      
-          if (this.crs !== '') {
-            filteredQuery = filteredQuery.where('course', '==', this.crs);
-          }
-      
-          if (this.genderbase !== '') {
-            filteredQuery = filteredQuery.where('gender', '==', this.genderbase);
-          }
-      
-          if (this.gradeAverage !== '') {
-            const minGrade = Number(this.gradeAverage);
-            const maxGrade = minGrade + 10;
-            filteredQuery = filteredQuery.where('gradeAverage', '>=', minGrade).where('gradeAverage', '<', maxGrade);
-          }
-    
-          if (this.selectedMunicipality !== '') {
-            filteredQuery = filteredQuery.where('municipality', '==', this.selectedMunicipality);
-          }
-      
-          if (this.selectedProvince) {
-            filteredQuery = filteredQuery.where('provice', '==', this.selectedProvince);
-          }
-      
-          if (this.selectedMaspala) {
-            filteredQuery = filteredQuery.where('municipality', '==', this.selectedMaspala);
-          }
-      
-          return filteredQuery;
-        });
-      
-        query.valueChanges().subscribe((data) => {
+        this.filterService.getFilteredData(
+          this.faculty,
+          this.crs,
+          this.genderbase,
+          this.gradeAverage,
+          this.selectedMunicipality,
+          this.selectedProvince,
+          this.selectedMaspala
+        ).subscribe((data) => {
           console.log(data);
           this.tableData = data; // Assign retrieved data to tableData
         });
       }
-      
+    
       applyFilter() {
         this.filter();
       }
@@ -490,7 +476,7 @@ filteredData: any[] = [];
       }
     
       genderFilter() {
-         this.filter();
+        this.filter();
       }
     
 
@@ -535,142 +521,12 @@ async openCVModal(cvUrl:any) {
   await modal.present();
 }
 
-goToView(): void {
-  this.navController.navigateBack('/staffprofile');
-}
 
 //Previlages
 
 ionViewDidEnter() {
-  this.getUser();
+
 }
-
-async getUser(): Promise<void> {
-  const user = await this.auth.currentUser;
-
-  if (user) {
-    try {
-      const querySnapshot = await this.db
-        .collection('registeredStaff')
-        .ref.where('email', '==', user.email)
-        .get();
-
-      if (!querySnapshot.empty) {
-        this.userDocument = querySnapshot.docs[0].data();
-        console.log(this.userDocument);
-      }
-    } catch (error) {
-      console.error('Error getting user document:', error);
-    }
-  }
-}
-
-async goToAddUser(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.addUser === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/add-user');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Add user Page:', error);
-  }
-}
-
-async goToValidator(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.validation === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/ga-validation');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Grade validation Page:', error);
-  }
-}
-
-
-
-async goToEmployment(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.employment === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/employment-page');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Employment Page:', error);
-  }
-}
-
-
-async goToHistory(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.history === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/history');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to History Page:', error);
-  }
-}
-
-async  goToReports(): Promise<void> {
-  try {
-    await this.getUser();
-
-    if (this.userDocument && this.userDocument.role && this.userDocument.role.statistic === 'on') {
-      // Navigate to the desired page
-      this.navController.navigateForward('/reports');
-    } else {
-      const toast = await this.toastController.create({
-        message: 'Unauthorized user.',
-        duration: 2000,
-        position: 'top'
-      });
-      toast.present();
-    }
-  } catch (error) {
-    console.error('Error navigating to Reports Page:', error);
-  }
-}
-
-
-
-//sign out
 
 async presentConfirmationAlert() {
   const alert = await this.alertController.create({
@@ -725,17 +581,6 @@ async presentToast() {
   navigateBasedOnRole(arg0: string): Promise<void> {
     throw new Error('Method not implemented.');
   }
-
-
-goToMenuPage(): void {
-  this.navController.navigateForward('/menu').then(() => {
-    window.location.reload();
-  });
-}
-
-goToHomePage(): void {
-  this.navController.navigateBack('/home');
-}
 
 
 async selectAll() {

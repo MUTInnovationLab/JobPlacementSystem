@@ -36,7 +36,7 @@
        <ion-col>
          <ion-item class="dropdown" lines="none">
            <ion-label>Faculty</ion-label>
-           <ion-select [(ngModel)]="faculty" (ionChange)="getCourse($event)" (ionChange)="applyFilter()">
+           <ion-select [(ngModel)]="faculty" (ionChange)="getCourse($event)" (ionChange)="applyFilterPlaced()">
              <ion-select-option value="Natural Sciences">Natural Sciences</ion-select-option>
              <ion-select-option value="Management Sciences">Management Sciences</ion-select-option>
              <ion-select-option value="Engineering">Engineering</ion-select-option>
@@ -47,7 +47,7 @@
      <ion-col>
        <ion-item class="dropdown" lines="none">
          <ion-label>Course</ion-label>
-         <ion-select interface="action-sheet" [(ngModel)]="crs" (ionChange)="applySecondFilter()">
+         <ion-select interface="action-sheet" [(ngModel)]="crs" (ionChange)="applySecondFilterPlaced()">
            <ng-container *ngFor="let cdata of course">
              <ion-select-option value="{{cdata.course}}"  >
                <!-- If the value of cdata.course is an array, display the first value; otherwise, display the value itself -->
@@ -75,7 +75,7 @@
      <ion-col>
        <ion-item item-start>
          <ion-label>LEVEL</ion-label>
-         <ion-select interface="popover" placeholder="" [(ngModel)]="level" (ionChange)="levelFilter()">
+         <ion-select interface="popover" placeholder="" [(ngModel)]="level" (ionChange)="levelFilterPlaced()">
            <ion-select-option value="WIL">WIL</ion-select-option>
            <ion-select-option value="EMPLOYMENT">EMPLOYMENT</ion-select-option>
          </ion-select>

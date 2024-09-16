@@ -1,22 +1,26 @@
-.center {
-    text-align: center;
-    height: 100%;
-    width: 100%;
-}
+
 
 ion-content {
     --background: #fff;
 }
 
 .container {
+    display: flex;
+    justify-content: center;  /* Centers horizontally */
     margin-left: 20px;
     margin-right: 20px;
-    text-align: center;
     font-size: 14px;
-}
+  }
+  
+  .center img {
+    max-width: 100%;          /* Ensures the image doesn't overflow its container */
+    height: 100px;             /* Maintains aspect ratio */
+    z-index: 1;
+  }
+  
 
 ion-card {
-    background-color: #C99115;
+    background-color: #802B28;
     width: 80%;
     max-width: 500px;
     margin: auto;

@@ -6,6 +6,7 @@ import {  NavController,AlertController } from '@ionic/angular';
 
 import { Timestamp } from 'firebase/firestore';
 import { FilterService } from '../services/filter.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-recommended',
@@ -141,6 +142,8 @@ export class RecommendedPage implements OnInit {
   }
 
   ngOnInit() {
+
+
   }
 
   //dropdown
@@ -167,31 +170,42 @@ export class RecommendedPage implements OnInit {
     
  
   applyFilter() {
-    this.filterService.applyFilter(this.faculty).subscribe(data => {
+    this.filterService.filterByFacultyAndStatus(this.faculty, 'recommended').subscribe((data: any[]) => {
       this.tableData = data;
+      console.log(data);
     });
   }
 
   applySecondFilter() {
-    this.filterService.applySecondFilter(this.crs).subscribe(data => {
+    this.filterService.filterByCourseAndStatus(this.crs, 'recommended').subscribe((data: any[]) => {
       this.tableData = data;
+      console.log(data);
     });
   }
 
   levelFilter() {
-    this.filterService.levelFilter(this.level, this.faculty, this.crs).subscribe(data => {
-      this.tableData = data;
+    this.filterService.filterByLevelFacultyCourse(this.level, this.faculty, this.crs).subscribe((data: any[]) => {
+      let filteredData = data;
+
+      if (this.gradeAverage !== '') {
+        filteredData = this.filterService.filterDataByGradeRange(data, this.gradeAverage);
+      }
+
+      this.tableData = filteredData;
+      console.log(filteredData);
     });
   }
 
   avg() {
-    if (this.gradeAverage !== "") {
-      this.filterService.avgFilter(this.gradeAverage, this.crs).subscribe(filteredData => {
+    if (this.gradeAverage !== '') {
+      this.filterService.filterByGradeRange(this.crs, this.gradeAverage).subscribe((data: any[]) => {
+        const filteredData = this.filterService.filterDataByGradeRange(data, this.gradeAverage);
         this.tableData = filteredData;
+        console.log(filteredData);
       });
     }
   }
-  
+
 
   async updateStatus(email: string) {
     const query = this.db.collection('studentProfile', ref => ref.where('email', '==', email));
@@ -199,7 +213,7 @@ export class RecommendedPage implements OnInit {
   
     if (snapshot && snapshot.docs.length > 0) {
       const docRef = snapshot.docs[0].ref;
-      const placedDate = Timestamp.now(); // Current timestamp
+      const placedDate = Timestamp.now(); 
   
       await docRef.update({ 
         status: 'placed',
