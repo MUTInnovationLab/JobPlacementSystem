@@ -15,7 +15,7 @@ import { filter } from 'rxjs/operators';
           <a class="logo">
             <img src="assets/MUT LOGO.png" alt="Logo">{{ currentPageTitle }}
           </a>
-          <div class="hamburger-menu" (click)="toggleNav()">
+          <div class="hamburger-menu" (click)="toggleNav()" [ngClass]="{ 'active': isNavOpen }">
             <div class="bar"></div>
             <div class="bar"></div>
             <div class="bar"></div>
@@ -23,8 +23,8 @@ import { filter } from 'rxjs/operators';
           <div class="nav-links" [ngClass]="{ 'open': isNavOpen }">
             <a (click)="goToHome()" class="nav-link">Home</a>
             <a (click)="goToAddUser()" class="nav-link">Add Staff</a>
-            <div class="nav-link business-dropdown">
-              <span><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
+            <div class="nav-link business-dropdown" [ngClass]="{ 'active': isDropdownOpen }">
+              <span (click)="toggleDropdown($event)"><ion-icon name="caret-down-outline"></ion-icon>Tasks</span>
               <div class="dropdown-content">
                 <a (click)="goToValidator()" class="dropdown-item">Profile Validator</a>
                 <a (click)="goToEmployment()" class="dropdown-item">Employment</a>
@@ -46,6 +46,8 @@ export class NavComponent implements OnInit {
   userDocument: any;
   user$: Observable<any> = of(null);
   currentPageTitle: string = 'Dashboard';
+  isDropdownOpen: boolean = false;
+
 
   constructor(
     private navController: NavController,
@@ -60,6 +62,10 @@ export class NavComponent implements OnInit {
     this.getUser();
     this.updatePageTitle(); // Add this line to set the initial page title
     this.setupPageTitleListener();
+  }
+  toggleDropdown(event: Event) {
+    event.stopPropagation();
+    this.isDropdownOpen = !this.isDropdownOpen;
   }
   
   setupPageTitleListener() {
@@ -106,8 +112,10 @@ export class NavComponent implements OnInit {
 
   toggleNav() {
     this.isNavOpen = !this.isNavOpen;
+    if (!this.isNavOpen) {
+      this.isDropdownOpen = false;
+    }
   }
-
   async getUser(): Promise<void> {
     const user = await this.auth.currentUser;
 
