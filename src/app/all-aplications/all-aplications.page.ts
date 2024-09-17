@@ -34,8 +34,8 @@ export class AllAplicationsPage implements OnInit {
   naturalSciencesData: any[] =[];
   gradeAverage="";
   currentPage: number = 1;
-rowsPerPage: number = 10;
-studentno='';
+  rowsPerPage: number = 10;
+  studentno='';
 
 
   constructor(

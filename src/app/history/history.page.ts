@@ -27,7 +27,7 @@ export class HistoryPage implements OnInit {
   showSecondDropdownFlag: boolean = false;
   selectedOption:any;
   historyData: any;
-loginCount:any;
+  loginCount:any;
   recommended: any = 0;
 
   naturalSciencesData: any[] =[];
@@ -37,6 +37,8 @@ loginCount:any;
   status='';
   genderbase='';
   
+  currentPage: number = 1;
+  rowsPerPage: number = 10;
 
   
   constructor(private alertController: AlertController,
@@ -51,13 +53,34 @@ loginCount:any;
  
     this.getHistoryData()
   }
+ 
+  previousPage() {
+    this.currentPage--;
+  }
+  
+  
+  
+  nextPage() {
+    this.currentPage++;
+  }
+  
+  totalPages(): number {
+    return Math.ceil(this.tableData.length / this.rowsPerPage);
+  }
 
   ngOnInit() {
    
   }
 
- 
   
+  get paginatedTableData(): any[] {
+    const startIndex = (this.currentPage - 1) * this.rowsPerPage;
+    const endIndex = startIndex + this.rowsPerPage;
+    return this.tableData.slice(startIndex, endIndex);
+  }
+
+  
+
   isNavOpen: boolean = false;
   toggleNav() {
     console.log('menu');
@@ -69,6 +92,7 @@ loginCount:any;
   goToView(): void {
     this.navController.navigateBack('/staffprofile');
   }
+  
   handleMenuClick() {
     console.log('Menu button clicked');
   }

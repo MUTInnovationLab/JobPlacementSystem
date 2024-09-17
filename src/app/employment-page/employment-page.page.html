@@ -147,7 +147,7 @@
         </tr>
       </thead>
       <tbody class="body">
-        <tr *ngFor="let data of tableData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)">
+          <tr *ngFor="let data of tableData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)">
           <td>
             <ion-checkbox [(ngModel)]="data.checked" (ionChange)="updateSelectedItems(data,data.AllInOnePdfURL,data.email)"></ion-checkbox>
           </td>
@@ -198,12 +198,16 @@
       </ion-button>
     </ion-card-content>
   </ion-card>
+
+
 <div class="pagination">
   <div class="centered-buttons">
     <button class="pagination-button" [disabled]="currentPage === 1" (click)="previousPage()">Previous</button>
     <button class="pagination-button" [disabled]="currentPage === totalPages()" (click)="nextPage()">Next</button>
   </div>
 </div>
+
+
 </ion-content>
 <ion-footer>
   Designed by &#64;<b>MUT INNOVATIONLAB</b>

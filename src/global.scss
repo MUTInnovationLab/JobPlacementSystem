@@ -339,6 +339,33 @@ ion-card-title {
   margin-bottom: 12px;
 }
 
+
+
+.pagination, .centered-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-button {
+  background-color: #c42e2e;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  font-size: 16px;
+  margin: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  text-decoration: none;
+}
+
+.pagination-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+
 ion-card-content {
   color: var(--dark-color);
   font-size: 1rem;
