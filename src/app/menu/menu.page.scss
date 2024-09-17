@@ -15,11 +15,14 @@ ion-content {
   color: var(--text-color);
 }
 
+
+
 .dashboard-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 20px;
+ 
 }
 
 /* Quick action cards */
@@ -37,7 +40,8 @@ ion-content {
   justify-content: center;
   padding: 20px;
   border-radius: 15px;
-  background-color: var(--secondary-background);
+  // background-color: var(--secondary-background);
+  background-color: #C89015;
   transition: var(--transition);
   color: var(--primary-color);
 }
@@ -61,7 +65,7 @@ ion-content {
 
 /* User profile and tasks cards */
 ion-card {
-  background-color: var(--card-background);
+  background-color: #682c27;
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);

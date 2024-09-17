@@ -36,7 +36,6 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
 
-
 :root {
   --primary-color: #006281;
   --secondary-color: #56231F;
@@ -56,7 +55,7 @@ ion-toolbar {
 
 body {
   font-family: var(--font-family);
-  color: var(--light-color); /* Changed to light color (white) */
+  color: var(--light-color);
   margin: 0;
   padding: 0;
 }
@@ -88,7 +87,7 @@ body {
 .logo {
   font-size: 1.5em;
   font-weight: bold;
-  color: var(--light-color); /* Changed to light color (white) */
+  color: var(--light-color);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -115,14 +114,14 @@ ion-footer {
   text-align: center;
 }
 
-.error-message{
+.error-message {
   color: red;
   font-size: small;
   font-family: Arial;
 }
 
 .nav-link {
-  color: var(--light-color); /* Changed to light color (white) */
+  color: var(--light-color);
   text-decoration: none;
   font-weight: 500;
   padding: 10px 0;
@@ -134,16 +133,15 @@ ion-footer {
   content: '';
   position: absolute;
   width: 0;
-  color: var(--secondary-color);
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: var(--light-color); /* Changed to light color (white) */
+  background-color: var(--light-color);
   transition: var(--transition);
 }
 
 .nav-link:hover {
-  color: var(--light-color); /* Changed to light color (white) */
+  color: var(--light-color);
 }
 
 .nav-link:hover::after {
@@ -154,14 +152,14 @@ ion-footer {
   position: relative;
 }
 
-.dropdown-grid{
+.dropdown-grid {
   margin-top: 90px;
 }
 
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: var(--primary-color); /* Changed to primary color for contrast */
+  background-color: var(--primary-color);
   min-width: 200px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
@@ -179,14 +177,14 @@ ion-footer {
 
 .dropdown-item {
   display: block;
-  color: var(--light-color); /* Changed to light color (white) */
+  color: var(--light-color);
   padding: 12px 20px;
   text-decoration: none;
   transition: var(--transition);
 }
 
 .dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Changed for better contrast */
+  background-color: rgba(255, 255, 255, 0.1);
   color: var(--light-color);
 }
 
@@ -203,7 +201,7 @@ ion-footer {
   display: block;
   width: 25px;
   height: 3px;
-  background-color: var(--light-color); /* Changed to light color (white) */
+  background-color: var(--light-color);
   margin: 5px 0;
   transition: var(--transition);
 }
@@ -224,7 +222,7 @@ ion-footer {
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
-    background-color: var(--primary-color); /* Changed to primary color */
+    background-color: var(--primary-color);
     position: absolute;
     top: var(--nav-height);
     left: 0;
