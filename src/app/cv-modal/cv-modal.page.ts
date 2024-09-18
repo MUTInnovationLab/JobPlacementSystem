@@ -12,6 +12,7 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 export class CvModalPage implements OnInit {
 
   cvUrl: any;
+
   safePdfUrl: SafeResourceUrl | undefined;
 
   constructor(private modalController: ModalController,private sanitizer: DomSanitizer,private navParams: NavParams) { }

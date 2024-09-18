@@ -467,16 +467,14 @@ export class EmploymentPagePage implements OnInit {
   }
 
   //open cv
-  async openCVModal(cvUrl: any) {
+  async openCVModal(cvUrl: string) {
     const modal = await this.modalController.create({
       component: CvModalPage,
-      componentProps: {
-        cvUrl: cvUrl,
-      },
+      componentProps: { cvUrl }
     });
-
     await modal.present();
   }
+  //
 
   filter() {
     this.filterService.filter(
@@ -510,20 +508,14 @@ export class EmploymentPagePage implements OnInit {
   }
 
 
- 
-
-
-  async openViewAcademicRecordModal(pdfUrl: any) {
+  async openViewAcademicRecordModal(pdfUrl: string) {
     const modal = await this.modalController.create({
       component: ViewAcademicRecordModalPage,
-      componentProps: {
-        pdfUrl: pdfUrl,
-      },
+      componentProps: { pdfUrl }
     });
 
     await modal.present();
   }
-
 
 
 goToView(): void {

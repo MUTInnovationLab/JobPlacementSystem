@@ -13,12 +13,14 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NavComponent } from './nav.component';
 import { DeclineModalComponent } from './decline-modal/decline-modal.component';
+// import { ViewAcademicRecordModalPage } from './view-academic-record-modal/view-academic-record-modal.page';
 
 @NgModule({
   declarations: [
     AppComponent, 
     NavComponent, 
-    DeclineModalComponent // Add DeclineModalComponent here
+    DeclineModalComponent, // Add DeclineModalComponent here
+    // ViewAcademicRecordModalPage
   ],
   imports: [
     BrowserModule,
