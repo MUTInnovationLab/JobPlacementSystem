@@ -576,8 +576,6 @@ async presentToast() {
 }
 
 
-
-
   navigateBasedOnRole(arg0: string): Promise<void> {
     throw new Error('Method not implemented.');
   }

@@ -1,8 +1,6 @@
 <ion-header>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </ion-header>
-
 
 <ion-content style="--background: url('assets/view3.jpg') no-repeat center / cover;">
   <br>
@@ -10,7 +8,6 @@
       <div class="container">
           <div class="center">
             <img src="assets\vv.png" alt="" srcset="" />
-            
           </div>
         </div>
         <br>
@@ -29,7 +26,6 @@
                     <ion-input type="password" name="password" [(ngModel)]="password"></ion-input>
                   </ion-item>
                   <br>
-                  
                   <ion-button type="submit" expand="block" (click)=log()>LOGIN</ion-button>
                   <div>
                   <ion-label>Already have an account?</ion-label>
@@ -37,11 +33,16 @@
                 </div>
                   <ion-label>Forgot Password?</ion-label>
                   <ion-label class="forgotPass" (click)= goToPage()>Reset</ion-label>
-  
-               
                 </div>  
             </ion-card-content>
           </ion-card>
+       <!-- chatbot -->
+          <div class="chatbot-container">
+              <ion-icon [name]="isChatbotOpen ? 'close' : 'chatbubble-ellipses'"></ion-icon>
+            <div class="chatbot-wrapper" [class.open]="isChatbotOpen">
+              <div id="botpress-webchat" class="botpress-webchat"></div>
+            </div>
+          </div>
   </ion-content>
   <ion-footer>
     Designed by &#64;<b>MUT INNOVATIONLAB</b>

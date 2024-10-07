@@ -21,7 +21,40 @@ export class SignInPage implements OnInit {
      private toastController: ToastController) { }
 
   ngOnInit() {
+    this.loadBotpress();
   }
+
+//chatbot code
+  isChatbotOpen = false;
+
+        
+  loadBotpress() {
+    // Load the Botpress inject script dynamically
+    const injectScript = document.createElement('script');
+    injectScript.src = 'https://cdn.botpress.cloud/webchat/v1/inject.js';
+    injectScript.async = true;
+    document.head.appendChild(injectScript);
+
+    // Load the Botpress configuration script dynamically
+    const configScript = document.createElement('script');
+    configScript.src = 'https://mediafiles.botpress.cloud/9650ceea-233c-474d-ab57-0208c18b7e29/webchat/config.js';
+    configScript.defer = true;
+    document.head.appendChild(configScript);
+
+  }
+
+  showBotpress() {
+    (window as any).botpressWebChat.init({
+      hostUrl: 'https://cdn.botpress.cloud/webchat/v1',
+      botId: '9650ceea-233c-474d-ab57-0208c18b7e29',
+      botName: 'Support Bot',
+      enableReset: true,
+      enableTranscriptDownload: true,
+      showPoweredBy: false,
+    });
+  }
+
+
   goToHomePage(): void {
     this.navController.navigateBack('/home');
   }
@@ -87,11 +120,6 @@ export class SignInPage implements OnInit {
     // If all validations pass, continue with sign-in logic
     this.log();
   }
-  
-  
-  
-  
-
 
   async log() {
     const loader = await this.loadingController.create({
