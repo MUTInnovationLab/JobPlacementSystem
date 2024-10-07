@@ -7,10 +7,12 @@
 }
 
 .center img {
-  max-width: 150%;          /* Ensures the image doesn't overflow its container */
-  height: 150px;             /* Maintains aspect ratio */
+  max-width: 350%;          /* Ensures the image doesn't overflow its container */
+  height: 350px;             /* Maintains aspect ratio */
   z-index: 1;
+  margin-top: -30%;
 }
+
 
   ion-content {
     --background:#fff;
@@ -24,23 +26,24 @@
     font-weight: bold;
   }
   
-.container{
-  
-  margin-left:20px ;
-  margin-right: 20px;
-  text-align: center;
-  font-size: 14px;
-    
-    text-align: center;
+  .container {
+    display: flex;
+    justify-content: center;  /* Centers horizontally */
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 14px;
   }
-  ion-card{
+  
+
+
+ion-card {
     background-color: #802B28;
     width: 80%;
     max-width: 500px;
-     margin:  auto;
-     box-shadow: black;
-   
-  }
+    margin: auto;
+    box-shadow: black;
+    margin-top:-11%
+}
 .rounded {
   border-radius: 10px; 
   }
